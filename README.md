@@ -8,7 +8,7 @@ Our BNN and MLP regressors were trained on polycristalline olivine textures gene
 
 To be exact, our deformation paths consisted of 150 random combinations of pure sheer + axial extension veloctiy gradients, and 150 random combinations of pure sheer + axial compression veloctiy gradients. These textures were then augmented by 150 randomly generated rotations sampled from the orthorhombic fundamental zone.
 
-From our modified version of the VPSC code, we obtained the textures's stress and strain rates to compute the Hill yield surface coefficients in order to describe their anisotropy (see [Signorelli, et al.](https://doi.org/10.5281/zenodo.5079356)). We also obtained the textures' Cijkl elasticity tensor components to represent them, of which we only need 21 components thanks to their symmetry. 
+From our modified version of the VPSC code, we obtained the textures's stress and strain rates to compute the Hill yield surface coefficients in order to describe their anisotropy (see [Signorelli, et al.](https://doi.org/10.46298/jtcam.6737)). We also obtained the textures' Cijkl elasticity tensor components to represent them, of which we only need 21 components thanks to their symmetry. 
 
 Through this texture representation, we were able to predict both the Hill coefficients and the texture rotations well enough and in adequate time so that the results of our model may further be used in a 3D thermo-mechanical finite-element code developed to model large-scale geodynamical flows.
 
@@ -103,7 +103,7 @@ load_dir: str = "directory/to/your/model"
 
 ```
 
-You may then execute, for either/both training and predictions with your desired configuration and hyperparameters, with the command:
+The execution command, for either/both training and predictions with your desired configuration and hyperparameters:
 
 ```
 python train.py 
@@ -112,7 +112,8 @@ python train.py
 In case you want to train on a number of hyperparameter combinations, you must add the following command to your submission script: 
 
 ```
-HYPERPARAMETERS="model.hidden_dim=choice(42,84), datamodule.batch_size=choice(256,512)"        # Example choice of multiple hyperparams
+# Example choice of multiple hyperparams
+HYPERPARAMETERS="model.hidden_dim=choice(42,84), datamodule.batch_size=choice(256,512)"  
 
 (...)   # Load env, etc.
 
