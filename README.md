@@ -1,6 +1,6 @@
  Deep Learning for Physical Property Predictions of Polycristalline Textures
 
-BNN and MLP regressors trained to predict texture viscous anisotropy, as parameterized by the Hill orthotropic yield criterion. These regressors may also be used to predict texture rotations. To use our model, textures must be represented by their 21 independent elasticity tensor components. 
+BNN and MLP regressors trained to predict polycrystalline texture viscous anisotropy, as parameterized by the Hill orthotropic yield criterion. These regressors may also be used to predict texture rotations. To use our model, textures must be represented by their 21 independent elasticity tensor components. 
 
 ## Description
 
@@ -65,43 +65,64 @@ To reproduce our results (...)
 
 ### Dependencies
 
-* Describe any prerequisites, libraries, OS version, etc., needed before installing program.
-* ex. Windows 10
+Our work was mainly developed in Python 3.10 using Pytorch 2.11 and Pyro 1.9, the probabilistic programming language built on top of it. Dependencies can be found in the "requirements.txt" file accompanying our repo. 
 
 ### Installing
 
-* How/where to download your program
-* Any modifications needed to be made to files/folders
+Simply install the required libraries with pip using the command:
+
+```
+pip install -r requirements.txt
+```
 
 ### Execution
 
-* How to run the program
-* Step-by-step bullets
+In case you want to train a model from scratch, you must specify your desired configurations in the config folder as described above. Depending on the type of network that you want to train, make sure to set 
+
 ```
-code blocks for commands
+train: bool = True
+```
+in the respective "pipeline_config.py" file. If you wish to subsequently perform a prediction with your trained model, set
+
+```
+predict: bool = True
 ```
 
-## Help
+If you wish to use a pre-trained model, please specify this with 
 
-Any advise for common problems or issues.
 ```
-command to run if program contains helper info
+train: bool = False
+
+predict: bool = True
+load_model: bool = True
+load_dir: str = "directory/to/your/model"
+
 ```
+
+You may then execute, for either/both training and predictions with your desired configuration and hyperparameters, with the command:
+
+```
+python train.py 
+
+```
+
+In case you want to train on a number of hyperparameter combinations, you must add the following command to your submission script: 
+
+```
+HYPERPARAMETERS="model.hidden_dim=choice(42,84), datamodule.batch_size=choice(256,512)"        # Example choice of multiple hyperparams
+
+(...)   # Load env, etc.
+
+python train.py --multirun $HYPERPARAMETERS &
+wait
+
+```
+
+Outputs along with logs will appear in a separate folder. 
 
 ## Authors
 
-Contributors names and contact info
-
-ex. Dominique Pizzie  
-ex. [@DomPizzie](https://twitter.com/dompizzie)
-
-## Version History
-
-* 0.2
-    * Various bug fixes and optimizations
-    * See [commit change]() or See [release history]()
-* 0.1
-    * Initial Release
+By Audrey Sabri for Géosciences Montpellier under the supervision of Andrea Tommasi and Nestor Cerpa. 
 
 ## License
 
@@ -109,9 +130,5 @@ This project is licensed under the [NAME HERE] License - see the LICENSE.md file
 
 ## Acknowledgments
 
-Inspiration, code snippets, etc.
-* [awesome-readme](https://github.com/matiassingers/awesome-readme)
-* [PurpleBooth](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
-* [dbader](https://github.com/dbader/readme-template)
-* [zenorocha](https://gist.github.com/zenorocha/4526327)
-* [fvcproductions](https://gist.github.com/fvcproductions/1bfc2d4aecb01a834b46)
+Hydra template used belongs to 
+* [hyperparameter-search-template](https://github.com/NKI-AI/hyperparameter-search-template)
