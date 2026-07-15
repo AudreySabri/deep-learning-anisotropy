@@ -12,7 +12,9 @@ From our modified version of the VPSC code, we obtained the textures's stress an
 
 Through this texture representation, we were able to predict both the Hill coefficients and the texture rotations well enough and in adequate time so that the results of our model may further be used in a 3D thermo-mechanical finite-element code developed to model large-scale geodynamical flows.
 
-Our repository is built with Hydra to simplify executions over different configurations (hyperparameters, datasets, etc.) with a single line of code. The desired configuration can be specified by updating the .py folders within the <code>config</code> folder, or by running the appropreate command, as you will see in the **Execution** section. Slurm job submission is simplified thanks to the <code>Submitit</code> library, with example scripts in the <code>scripts</code> folder. This will allow users to experiment with different datasets, hyperparameter tunings, or even prediction targets. 
+Our repository is built with <code>Hydra</code> to simplify executions over different configurations (hyperparameters, datasets, etc.) with a single line of code. The desired configuration can be specified by updating the <code>.py</code> filess within the <code>config</code> folder, or by running the appropreate command, as you will see in the **Execution** section. 
+
+Slurm job submission is simplified thanks to the <code>Submitit</code> library, with example scripts in the <code>scripts</code> folder. This will allow users to experiment with different datasets, hyperparameter tunings, or even prediction targets. 
 
 The repo structure is as follows:   
 
