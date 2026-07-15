@@ -21,7 +21,7 @@ def main(config: DictConfig):
 
 if __name__ == "__main__":
     # import the configs only here, since we want dotenv to run before the configs -- to register environment variables
-    from config.bnn_hpo_config import register_configs
+    from config.bnn_pipeline_config import register_configs
     
     register_configs()  # register hydra configs
 
