@@ -14,7 +14,7 @@ Through this texture representation, we were able to predict both the Hill coeff
 
 Our repository is built with Hydra to simplify executions over different configurations (hyperparameters, datasets, etc.) with a single line of code. The desired configuration can be specified by updating the .py folders within the "config" folder, or by running the appropreate command, as you will see in the "Execution" section. Slurm job submission is simplified thanks to the Submitit library, with example scripts in the "scripts" folder. This will allow users to experiment with different datasets, hyperparameter tunings, or even target variables. The repo structure is as follows:   
 
-{
+```
     ├── config      # Configurations go in here
     │   │── data
     │   │    └── data_config.py     # Data configuration
@@ -57,7 +57,7 @@ Our repository is built with Hydra to simplify executions over different configu
     ├── mlp_training_pipeline.py
     └── train.py        # Main file to execute
 
-}
+```
 
 To reproduce our results (...) 
 
@@ -77,7 +77,7 @@ pip install -r requirements.txt
 
 ### Execution
 
-In case you want to train a model from scratch, you must specify your desired configurations in the config folder as described above. Depending on the type of network that you want to train, make sure to set 
+In case you want to train a model from scratch, you must specify your desired configurations in the config folder as described above. Depending on the type of network that you want to train, in the respective "pipeline_config.py" file, make sure to set 
 
 ```
 train: bool = True
@@ -103,7 +103,6 @@ You may then execute, for either/both training and predictions with your desired
 
 ```
 python train.py 
-
 ```
 
 In case you want to train on a number of hyperparameter combinations, you must add the following command to your submission script: 
@@ -122,7 +121,7 @@ Outputs along with logs will appear in a separate folder.
 
 ## Authors
 
-By Audrey Sabri for Géosciences Montpellier under the supervision of Andrea Tommasi and Nestor Cerpa. 
+By Audrey Sabri for Géosciences Montpellier under the supervision of [Andrea Tommasi](https://www.gm.umontpellier.fr/annuaire/tommasi-andrea/) and [Nestor Cerpa](https://nestorcerpa.wordpress.com/). 
 
 ## License
 
