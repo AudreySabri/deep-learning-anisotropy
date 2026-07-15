@@ -1,4 +1,4 @@
- Deep Learning for Physical Property Predictions of Polycristalline Textures
+### Deep Learning for Physical Property Predictions of Polycristalline Textures
 
 BNN and MLP regressors trained to predict polycrystalline texture viscous anisotropy, as parameterized by the Hill orthotropic yield criterion. These regressors may also be used to predict texture rotations. To use our model, textures must be represented by their 21 independent elasticity tensor components. 
 
