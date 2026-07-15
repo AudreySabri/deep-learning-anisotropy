@@ -55,8 +55,8 @@ The repo structure is as follows:
     ├── scripts     
     │   ├── bnn_hpo.sh
     │   └── mlp_hpo.sh
-    ├── environment.yml
-    ├── .env
+    ├── requirements.txt
+    ├── .env        # Please specify directory to your database here
     ├── bnn_training_pipeline.py
     ├── mlp_training_pipeline.py
     └── train.py        # Main file to execute
@@ -80,6 +80,8 @@ pip install -r requirements.txt
 ```
 
 ### Execution
+
+First, you must specify the path to your training database in <code>.env</code>.
 
 In case you want to train a model from scratch, you must specify your desired configurations in the config folder as described above. Depending on the type of network that you want to train, in the respective <code>pipeline_config.py</code> file, make sure to set 
 
@@ -112,7 +114,7 @@ python train.py
 In case you want to train on a number of hyperparameter combinations, you must add the following command to your submission script: 
 
 ```
-# Example choice of multiple hyperparams
+# Example choice of multiple hyperparam combinations
 HYPERPARAMETERS="model.hidden_dim=choice(42,84), datamodule.batch_size=choice(256,512)"  
 
 (...)   # Load env, etc.
