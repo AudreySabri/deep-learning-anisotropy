@@ -1,10 +1,10 @@
-# Deep Learning for Physical Property Predictions of Polycristalline Textures
+# Deep Learning for Physical Property Predictions of CPO Polycrystalline Textures
 
 BNN and MLP regressors trained to predict polycrystalline texture viscous anisotropy, as parameterized by the Hill orthotropic yield criterion. These regressors may also be used to predict texture rotations. To use our model, textures must be represented by their 21 independent elasticity tensor components. 
 
 ## Description
 
-Our BNN and MLP regressors were trained on polycristalline olivine textures generated with the [Viscoplastic Self-consistent (VPSC)](https://doi.org/10.11578/dc.20231103.5) model. To generate our training database, we simulated 300 different deformation paths of 20 Eeq = 0.1 steps, starting from a texture of 500 randomly oriented crystals. 
+Our BNN and MLP regressors were trained on polycrystalline olivine textures generated with the [Viscoplastic Self-consistent (VPSC)](https://doi.org/10.11578/dc.20231103.5) model. To generate our training database, we simulated 300 different deformation paths of 20 Eeq = 0.1 steps, starting from a texture of 500 randomly oriented crystals. 
 
 To be exact, our deformation paths consisted of 150 random combinations of pure sheer + axial extension veloctiy gradients, and 150 random combinations of pure sheer + axial compression veloctiy gradients. These textures were then augmented by 150 randomly generated rotations sampled from the orthorhombic fundamental zone.
 

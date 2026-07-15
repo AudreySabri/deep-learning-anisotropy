@@ -1,3 +1,5 @@
+import math
+
 from torch import nn
 
 class MLP(nn.Module):
@@ -15,3 +17,20 @@ class MLP(nn.Module):
 
     def forward(self, x):
         return self.model(x)
+
+def xavier_init(model):
+    for name, param in model.named_parameters():
+        if name.endswith(".bias"):
+            param.data.fill_(0)
+        else:
+            bound = math.sqrt(6)/math.sqrt(param.shape[0]+param.shape[1])
+            param.data.uniform_(-bound, bound)
+
+def kaiming_init(model):
+    for name, param in model.named_parameters():
+        if name.endswith(".bias"):
+            param.data.fill_(0)
+        elif name.startswith("layers.0"):
+            param.data.normal_(0, 1/math.sqrt(param.shape[1]))
+        else:
+            param.data.normal_(0, math.sqrt(2)/math.sqrt(param.shape[1]))

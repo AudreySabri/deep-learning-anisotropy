@@ -1,4 +1,4 @@
-"""Config file for grid hyperparameter searchers"""
+"""Config file for BNN grid hyperparameter searchers"""
 from dataclasses import dataclass, field
 from typing import List, Any, Dict, Union
 

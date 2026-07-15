@@ -1,4 +1,4 @@
-"""Config file for Bayesian hyperparameter searchers -- uses advanced sweeper setup"""
+"""Config file for MKP grid hyperparameter searchers"""
 from dataclasses import dataclass, field
 from typing import List, Any, Dict, Union
 
@@ -8,15 +8,14 @@ from omegaconf import MISSING
 
 from config.data.data_config import DataConfig
 from config.launcher.launcher_config import SlurmConfig
+from config.model.mlp_config import MLPConfig
+from config.trainer.mlp_trainer_config import (
+    CPUTrainerConfig,
+    GPUTrainerConfig
+)
 from config.logging.logging_config import (
     TensorBoardLoggerConfig,
     TensorBoardCallbackConfig,
-)
-from config.model.bnn_config import (
-    PartialBNNConfig, 
-    GuideConfig, 
-    ELBOLossConfig,
-    SVIConfig,
 )
 
 defaults: List[Union[str, Dict[str, str]]] = [

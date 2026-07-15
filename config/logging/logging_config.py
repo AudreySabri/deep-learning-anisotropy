@@ -10,7 +10,7 @@ from utils import fullname
 class TensorBoardLoggerConfig:
     _target_: str = fullname(TensorBoardLogger)
     save_dir: str = "./tensorboard_runs"
-    name: str = "bnn_experiment"
+    name: str = "mlp_experiment"
     version: Optional[str] = None
     log_graph: bool = True
 
@@ -25,5 +25,5 @@ class TensorBoardCallbackConfig:
     save_top_k: int = 5
     save_weights_only: bool = False
     every_n_epochs: int = 1
-    monitor:  Optional[str] = "train_acc"
+    monitor:  Optional[str] = "train_mae"
     verbose: bool = True
