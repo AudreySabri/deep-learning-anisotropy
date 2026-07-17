@@ -49,10 +49,10 @@ def train(config: DictConfig) -> Optional[float]:
         for key, logger in config.loggers.items():
             logger_name = logger._target_
             log.info(f"Instantiating logger <{logger_name}>")
-            # Check if it is mlflow_logger -- we need this for mlflow model callbacks
-            if key == "mlflow":
-                mlflow_logger = hydra.utils.instantiate(logger)
-                loggers.append(mlflow_logger)
+            # Check if it is tensorboard_logger -- we need this for tensorboard model callbacks
+            if key == "tensorboard":
+                tensorboard_logger = hydra.utils.instantiate(logger)
+                loggers.append(tensorboard_logger)
             else:
                 loggers.append(hydra.utils.instantiate(logger))
 
@@ -61,10 +61,10 @@ def train(config: DictConfig) -> Optional[float]:
         for key, callback in config.callbacks.items():
             callback_name = callback._target_
             log.info(f"Instantiating callback <{callback_name}>")
-            if key == "mlflow_checkpoint" and mlflow_logger is not None:
+            if key == "tensorboard_checkpoint" and tensorboard_logger is not None:
 
                 callbacks.append(
-                    hydra.utils.instantiate(callback, mlflow_logger=mlflow_logger)
+                    hydra.utils.instantiate(callback, dirpath=tensorboard_logger.save_dir)
                 )
             else:
                 callbacks.append(hydra.utils.instantiate(callback))
@@ -78,7 +78,7 @@ def train(config: DictConfig) -> Optional[float]:
     # Send some parameters from config to all lightning loggers
     log.info("Logging hyperparameters!")
     utils.log_hyperparameters(
-        config=config, model=model, trainer=trainer, mlflow_logger=mlflow_logger
+        config=config, trainer=trainer,
     )
 
     # Train the model
@@ -94,6 +94,10 @@ def train(config: DictConfig) -> Optional[float]:
             "Make sure the `optimized_metric` in `hparams_search` config is correct!"
         )
     score = trainer.callback_metrics.get(optimized_metric).item()
+
+    if config.get("predict"):
+        log.info("Starting prediction!")
+        trainer.test(model=model, datamodule=datamodule)
 
     # Finalizing
     log.info("Finalizing!")

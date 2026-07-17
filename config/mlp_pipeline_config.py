@@ -22,10 +22,7 @@ defaults: List[Union[str, Dict[str, str]]] = [
     "_self_",
     {"datamodule": "anisotropy"},
     {"trainer": "cpu_trainer"},
-    {"model": "partial_bnn"},
-    {"guide": "low_rank"},
-    {"loss_fn": "elbo"},
-    {"lightning": "pyro_lightning_module"},
+    {"model": "mlp"},
     {"override /hydra/launcher": "submitit_slurm_local"},
 ]
 
@@ -35,18 +32,24 @@ callbacks = {"tensorboard_checkpoint": TensorBoardCallbackConfig}
 @dataclass
 class HPOConfig:
     defaults: List[Any] = field(default_factory=lambda: defaults)
-    hydra: Any = field(default_factory=lambda: HydraConf(launcher=SlurmConfig(), sweeper={}))
+    hydra: Any = field(default_factory=lambda: HydraConf())
     seed: int = 42
+
     train: bool = True
-    optimized_metric: str = ("train_acc")
+    optimized_metric: str = ("train_mae")
     loggers: Dict[str, Any] = field(default_factory=lambda: loggers)
     callbacks: Dict[str, Any] = field(default_factory=lambda: callbacks)
 
+    predict: bool = True
+    plot_pred: bool = True
+    load_model: bool = True
+    load_dir: str = "/home/sabria/scratch_sabria/vpsc-hill/deep-learning-anisotropy/multirun/2026-07-06/13-34-19/0/outputs"
+    predictions_file: str = "predictions.csv"
+    predictions_dir: str = "./predictions"
+    predictions_plot: str = "predictions.png"
+
     datamodule: Any = MISSING
     model: Any = MISSING
-    guide: Any = MISSING
-    loss_fn: Any = MISSING
-    lightning: Any = MISSING
     trainer: Any = MISSING
 
     launcher: Any = field(default_factory=SlurmConfig)
@@ -54,11 +57,7 @@ class HPOConfig:
 def register_configs():
     cs = ConfigStore()
     cs.store(group="datamodule", name="anisotropy", node=DataConfig)
-    cs.store(group="trainer", name="cpu_trainer", node=TrainerConfig)
-    cs.store(group="model", name="partial_bnn", node=PartialBNNConfig)
-   # cs.store(group="model", name="full", node=FullBNNConfig)
-    cs.store(group="guide", name="low_rank", node=GuideConfig)
-    cs.store(group="loss_fn", name="elbo", node=ELBOLossConfig)
-    cs.store(group="lightning", name="pyro_lightning_module", node=PyroLightningConfig)
+    cs.store(group="trainer", name="cpu_trainer", node=CPUTrainerConfig)
+    cs.store(group="model", name="partial_bnn", node=MLPConfig)
     cs.store(group="hydra/launcher", name="submitit_slurm_local", node=SlurmConfig)
     cs.store(name="hpo", node=HPOConfig)

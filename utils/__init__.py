@@ -68,9 +68,6 @@ def log_hyperparameters(
 
     # choose which parts of hydra config will be saved to loggers
     hparams["model"] = config["model"]
-    hparams["guide"] = config["guide"]
-    hparams["loss_fn"] = config["loss_fn"]
-    hparams["lightning"] = config["lightning"]
     hparams["datamodule"] = config["datamodule"]
     hparams["trainer"] = config["trainer"]
 

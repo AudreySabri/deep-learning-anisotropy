@@ -22,7 +22,7 @@ class TensorBoardCallbackConfig:
     dirpath: str = "checkpoints"
     mode: str = "min"
     save_on_train_epoch_end: bool = True
-    save_top_k: int = 5
+    save_top_k: int = 1
     save_weights_only: bool = False
     every_n_epochs: int = 1
     monitor:  Optional[str] = "train_mae"
