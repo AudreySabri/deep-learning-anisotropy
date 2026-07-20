@@ -97,30 +97,88 @@ def train(config: DictConfig) -> Optional[float]:
             save_dir / config.trained_model,
             )
         pyro.get_param_store().save(save_dir / config.param_store)
-    
-    if config.get("predict"):
-        log.info(f"Starting prediction")
+
+    if config.get("test"):
+        log.info("Starting prediction on test set!")
         start_mem = utils._get_memory_usage_mb()
 
         if config.get("load_model"):
             log.info(f"Loading model and guide from disk")
-            load_dir = Path(config.load_dir)
-            checkpoint = torch.load(load_dir / config.trained_model, weights_only=False)
+            checkpoint = torch.load(config.test_model_path, weights_only=False)
             model.load_state_dict(checkpoint["model"])
             guide = checkpoint["guide"]
-            pyro.get_param_store().load(load_dir / config.param_store)
+            pyro.get_param_store().load(config.test_param_store_path)
 
         predictive = pyro.infer.Predictive(model, 
                                            guide=guide, 
-                                           num_samples=config.get("num_samples"),
+                                           num_samples=config.get("test_num_samples"),
                                            return_sites=["obs"],
         )
         test_dl = datamodule.test_dataloader()
-        target_features = datamodule.return_target_names
         predictions, pred_df = hydra.utils.call(
             config.predictor,
             predictive=predictive,
             dataloader=test_dl,
+            device=config.predictor.device,
+            scaler=datamodule.return_target_scaler,
+        )
+
+        end_mem = utils._get_memory_usage_mb()
+
+        log.info(f"Prediction completed")
+        log.info("Memory usage: %.2f MB" % (end_mem - start_mem))
+
+        log.info("Saving predictions to disk")
+        test_dir = Path(config.get("test_results_dir"))
+        test_dir.mkdir(parents=True, exist_ok=True)
+        if config.get("plot_pred"):
+            plot_bnn_predictions(
+                results_dict=predictions,
+                target_features=datamodule.return_target_names,
+                save_dir=test_dir,
+                filename=config.get("test_results_plot")
+            )
+        pred_df.to_csv(test_dir/ config.get("test_results_file"), index=False)
+    
+    if config.get("predict"):
+        from data.csv_dataset import CSVDataset
+        from data.dataloaders import create_dataloader
+
+        log.info(f"Starting prediction")
+        start_mem = utils._get_memory_usage_mb()
+
+        pred_df = config.get("prediction_dataset_path")
+        pred_dataset = CSVDataset(
+                        df_path=pred_df,
+                        input_pattern=config.datamodule.input_pattern,
+                        target_pattern=config.datamodule.target_pattern,
+                    )
+        pred_dataset.data = datamodule.return_input_scaler.transform(pred_dataset.data)
+        pred_dataset.targets = datamodule.return_target_scaler.transform(pred_dataset.targets)
+        pred_dl = pred_dl = create_dataloader(
+                            dataset=pred_dataset,
+                            batch_size=config.datamodule.batch_size,
+                            num_workers=config.datamodule.num_workers,
+                            shuffle=False,
+                            pin_memory=config.datamodule.cuda,
+                        )
+
+        if config.get("load_predictive_model"):
+            log.info(f"Loading model and guide from disk")
+            checkpoint = torch.load(config.pred_model_path, weights_only=False)
+            model.load_state_dict(checkpoint["model"])
+            guide = checkpoint["guide"]
+            pyro.get_param_store().load(config.pred_param_store_path)
+
+        predictive = pyro.infer.Predictive(model, 
+                                           guide=guide, 
+                                           num_samples=config.get("pred_num_samples"),
+                                           return_sites=["obs"],
+        )
+        predictions, pred_df = hydra.utils.call(
+            config.predictor,
+            predictive=predictive,
+            dataloader=pred_dl,
             device=config.predictor.device,
             scaler=datamodule.return_target_scaler,
         )

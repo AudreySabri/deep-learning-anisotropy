@@ -95,8 +95,8 @@ def train(config: DictConfig) -> Optional[float]:
         )
     score = trainer.callback_metrics.get(optimized_metric).item()
 
-    if config.get("predict"):
-        log.info("Starting prediction!")
+    if config.get("test"):
+        log.info("Starting prediction on test set!")
         trainer.test(model=model, datamodule=datamodule)
 
     # Finalizing

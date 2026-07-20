@@ -43,13 +43,25 @@ class HPOConfig:
     trained_model: str = "trained_model.pt"
     param_store: str = "param_store.pt"
 
+    test: bool = True
+    load_testing_model: bool = True
+    test_model_path: str = "/home/sabria/scratch_sabria/vpsc-hill/deep-learning-anisotropy/multirun/2026-07-06/13-34-19/0/outputs/trained_model.pt"
+    test_param_store_path: str = "/home/sabria/scratch_sabria/vpsc-hill/deep-learning-anisotropy/multirun/2026-07-06/13-34-19/0/outputs/param_store.pt"
+    test_num_samples: int = 20
+    test_results_file: str = "test_results.csv"
+    test_results_dir: str = "./test_results"
+    plot_test_results: bool = True
+    test_results_plot: str = "test_results.png"
+
     predict: bool = True
-    plot_pred: bool = True
-    load_model: bool = True
-    load_dir: str = "/home/sabria/scratch_sabria/vpsc-hill/deep-learning-anisotropy/multirun/2026-07-06/13-34-19/0/outputs"
-    num_samples: int = 20
+    prediction_dataset_path : str = "/home/sabria/scratch_sabria/vpsc-hill/data/poly.csv"
+    load_predictive_model: bool = True
+    pred_model_path: str = "/home/sabria/scratch_sabria/vpsc-hill/deep-learning-anisotropy/multirun/2026-07-06/13-34-19/0/outputs/trained_model.pt"
+    pred_param_store_path: str = "/home/sabria/scratch_sabria/vpsc-hill/deep-learning-anisotropy/multirun/2026-07-06/13-34-19/0/outputs/param_store.pt"
+    pred_num_samples: int = 20
     predictions_file: str = "predictions.csv"
     predictions_dir: str = "./predictions"
+    plot_pred: bool = True
     predictions_plot: str = "predictions.png"
 
     datamodule: Any = MISSING
