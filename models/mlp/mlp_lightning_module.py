@@ -4,7 +4,7 @@ from typing import Any, List
 import torch
 from omegaconf import DictConfig
 from pytorch_lightning import LightningModule
-from torchmetrics import MaxMetric
+from torchmetrics import MinMetric
 from torchmetrics.regression import MeanAbsoluteError
 
 # pylint: disable = abstract-method
@@ -38,7 +38,7 @@ class MLPLitModule(LightningModule):
         self.test_mae = MeanAbsoluteError()
 
         # for logging best so far validation accuracy
-        self.val_mae_best = MaxMetric()
+        self.val_mae_best = MinMetric()
 
     def forward(self, x: torch.Tensor):
         return self.net(x)
@@ -57,9 +57,8 @@ class MLPLitModule(LightningModule):
 
         """
         x, y = batch
-        prediction = self.forward(x)
-        loss = self.criterion(prediction, y)
-        preds = torch.argmax(prediction, dim=1)
+        preds = self.forward(x)
+        loss = self.criterion(preds, y)
         return loss, preds, y
 
     def training_step(self, batch: Any):
@@ -72,8 +71,7 @@ class MLPLitModule(LightningModule):
 
         return {"loss": loss, "preds": preds, "targets": targets}
 
-    def training_epoch_end(self, outputs: List[Any]):
-        # `outputs` is a list of dicts returned from `training_step()`
+    def on_train_epoch_end(self):
         pass
 
     def validation_step(self, batch: Any):
@@ -86,7 +84,7 @@ class MLPLitModule(LightningModule):
 
         return {"loss": loss, "preds": preds, "targets": targets}
 
-    def validation_epoch_end(self, outputs: List[Any]):
+    def on_validation_epoch_end(self):
         mae = self.val_mae.compute()  # get val accuracy from current epoch
         self.val_mae_best.update(mae)
         self.log(
@@ -103,7 +101,7 @@ class MLPLitModule(LightningModule):
 
         return {"loss": loss, "preds": preds, "targets": targets}
 
-    def test_epoch_end(self, outputs: List[Any]):
+    def on_test_epoch_end(self):
         pass
 
     def on_epoch_end(self):

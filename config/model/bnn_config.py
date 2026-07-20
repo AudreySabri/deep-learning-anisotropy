@@ -6,7 +6,7 @@ from pyro.infer.autoguide import AutoLowRankMultivariateNormal
 from pyro.optim import Adam
 from omegaconf import MISSING
 
-from models.bnn.bnn import PartialBNN, FullBNN
+from models.bnn.network import PartialBNN, FullBNN
 from utils import fullname
 
 @dataclass

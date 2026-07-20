@@ -1,6 +1,8 @@
+from pathlib import Path
 from typing import List, Optional
 
 import hydra
+import pandas as pd
 from omegaconf import DictConfig
 from pytorch_lightning import (
     Callback,
@@ -9,7 +11,7 @@ from pytorch_lightning import (
     Trainer,
     seed_everything,
 )
-from pytorch_lightning.loggers import LightningLoggerBase
+from pytorch_lightning.loggers import Logger
 
 import utils
 
@@ -42,7 +44,7 @@ def train(config: DictConfig) -> Optional[float]:
     model: LightningModule = hydra.utils.instantiate(config.model)
 
     # Init loggers
-    loggers: List[LightningLoggerBase] = []
+    loggers: List[Logger] = []
     tensorboard_logger = None
     callbacks: List[Callback] = []
     if "loggers" in config:
@@ -72,14 +74,14 @@ def train(config: DictConfig) -> Optional[float]:
     # Init lightning trainer
     log.info(f"Instantiating trainer <{config.trainer._target_}>")
     trainer: Trainer = hydra.utils.instantiate(
-        config.trainer, callbacks=callbacks, logger=loggers, _convert_="partial"
+        config.trainer, callbacks=callbacks, logger=loggers, _convert_="partial", deterministic=True,
     )
 
     # Send some parameters from config to all lightning loggers
-    log.info("Logging hyperparameters!")
-    utils.log_hyperparameters(
-        config=config, trainer=trainer,
-    )
+  #  log.info("Logging hyperparameters!")
+  #  utils.log_hyperparameters(
+  #      config=config, trainer=trainer,
+  #  )
 
     # Train the model
     if config.get("train"):
@@ -97,9 +99,20 @@ def train(config: DictConfig) -> Optional[float]:
 
     if config.get("test"):
         log.info("Starting prediction on test set!")
-        trainer.test(model=model, datamodule=datamodule)
+        test_out = trainer.test(model=model, datamodule=datamodule)
+        target_scaler = datamodule.return_target_scaler
+        for batch_results in test_out:
+            print(batch_results)
+            for i in range(len(batch_results["preds"])):
+                batch_results["preds"][i] = target_scaler.inverse_transform(batch_results["preds"][i].detach())
+                batch_results["targets"][i] = target_scaler.inverse_transform(batch_results["targets"][i].detach())
+        test_results = {k: v.detach() for batch in test_out for k, v in batch.items()}
+        log.info("Saving predictions to disk")
+        test_dir = Path(config.get("test_results_dir"))
+        test_dir.mkdir(parents=True, exist_ok=True)
+        test_df = pd.DataFrame(test_results)
+        test_df.to_csv(test_dir/ config.get("test_results_file"), index=False)
 
-    # Finalizing
     log.info("Finalizing!")
     print(score)
     # Return metric score for hyperparameter optimization

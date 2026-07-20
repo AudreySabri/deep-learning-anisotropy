@@ -85,4 +85,4 @@ def register_configs():
     cs.store(group="inference", name="svi", node=SVIConfig)
     cs.store(group="predictor", name="bnn_predictor", node=BNNPredictorConfig)
     cs.store(group="hydra/launcher", name="submitit_slurm_local", node=SlurmConfig)
-    cs.store(name="hpo", node=HPOConfig)
+    cs.store(name="bnn_hpo", node=HPOConfig)

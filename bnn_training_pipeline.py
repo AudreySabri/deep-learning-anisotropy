@@ -115,7 +115,7 @@ def train(config: DictConfig) -> Optional[float]:
                                            return_sites=["obs"],
         )
         test_dl = datamodule.test_dataloader()
-        predictions, pred_df = hydra.utils.call(
+        test_results, test_df = hydra.utils.call(
             config.predictor,
             predictive=predictive,
             dataloader=test_dl,
@@ -133,12 +133,12 @@ def train(config: DictConfig) -> Optional[float]:
         test_dir.mkdir(parents=True, exist_ok=True)
         if config.get("plot_pred"):
             plot_bnn_predictions(
-                results_dict=predictions,
+                results_dict=test_results,
                 target_features=datamodule.return_target_names,
                 save_dir=test_dir,
                 filename=config.get("test_results_plot")
             )
-        pred_df.to_csv(test_dir/ config.get("test_results_file"), index=False)
+        test_df.to_csv(test_dir/ config.get("test_results_file"), index=False)
     
     if config.get("predict"):
         from data.csv_dataset import CSVDataset
@@ -155,7 +155,7 @@ def train(config: DictConfig) -> Optional[float]:
                     )
         pred_dataset.data = datamodule.return_input_scaler.transform(pred_dataset.data)
         pred_dataset.targets = datamodule.return_target_scaler.transform(pred_dataset.targets)
-        pred_dl = pred_dl = create_dataloader(
+        pred_dl = create_dataloader(
                             dataset=pred_dataset,
                             batch_size=config.datamodule.batch_size,
                             num_workers=config.datamodule.num_workers,

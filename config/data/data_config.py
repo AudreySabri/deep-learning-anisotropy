@@ -12,11 +12,11 @@ class DataConfig:
     file_path: str = 'aug_db.csv'
     input_pattern: str = r'^c\d+_out$'
     target_pattern: str = r'^hill\d+_out$'
-    train_split: float = 0.8
-    val_split: float = 0.
+    train_split: float = 0.6
+    val_split: float = 0.2
     test_split: float = 0.2
     transform: Optional[str] = 'standard'
     batch_size: int = 256
-    num_workers: int = 0
+    num_workers: int = 1
     cuda: bool = False
     seed: int = 42

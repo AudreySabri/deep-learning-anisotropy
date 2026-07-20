@@ -18,14 +18,6 @@ class MLP(nn.Module):
     def forward(self, x):
         return self.model(x)
 
-def xavier_init(model):
-    for name, param in model.named_parameters():
-        if name.endswith(".bias"):
-            param.data.fill_(0)
-        else:
-            bound = math.sqrt(6)/math.sqrt(param.shape[0]+param.shape[1])
-            param.data.uniform_(-bound, bound)
-
 def kaiming_init(model):
     for name, param in model.named_parameters():
         if name.endswith(".bias"):

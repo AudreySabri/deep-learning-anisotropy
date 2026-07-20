@@ -25,5 +25,5 @@ class TensorBoardCallbackConfig:
     save_top_k: int = 1
     save_weights_only: bool = False
     every_n_epochs: int = 1
-    monitor:  Optional[str] = "train_mae"
+    monitor:  Optional[str] = "train/mae"
     verbose: bool = True
