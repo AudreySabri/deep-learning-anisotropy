@@ -38,7 +38,7 @@ class PipelineConfig:
     seed: int = 42
 
     train: bool = True
-    tracking_metric: Any = fullname(L1Loss)
+    tracking_metric: str = fullname(L1Loss)
     save_dir: str = "./outputs"
     log_dir: str = "./logs"
 

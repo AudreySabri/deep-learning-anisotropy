@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 
 import numpy as np
 from torchinfo import summary
@@ -51,6 +52,7 @@ def train_and_evaluate(model, train_dl, val_dl, optimizer, loss_fn, metric_fn, n
             best_model_summary = str(summary(model))
 
             if save_dir is not None:
+                save_dir = Path(save_dir)
                 best_summary_file = save_dir / "best_model_summary.txt"
                 with open(best_summary_file, "w") as f:
                     f.write(best_model_summary)

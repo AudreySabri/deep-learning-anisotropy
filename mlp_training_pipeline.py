@@ -77,7 +77,7 @@ def train_mlp(config: DictConfig) -> Optional[float]:
             loss_fn=loss,
             metric_fn=config.tracking_metric,
             num_epochs=config.trainer.num_epochs,
-            save_dir=Path(config.save_dir),
+            save_dir=config.save_dir,
             writer=writer,
             cuda=config.trainer.cuda,
         )
