@@ -16,7 +16,6 @@ def BNNPredictor(predictive, dataloader, device, scaler=None):
         pd.DataFrame: DataFrame containing the predictions and their statistics.
     """
     pred_summary = {}
-    start = time.time()
 
     for x_test, y_test in dataloader:
         x_test, y_test = x_test.to(device), y_test.to(device)
@@ -37,9 +36,7 @@ def BNNPredictor(predictive, dataloader, device, scaler=None):
                 pred_summary[param_name] = {}
             for metric_name, metric_value in metrics.items():
                 pred_summary[param_name].setdefault(metric_name, []).append(metric_value)
-    end = time.time()
     logging.info("Prediction completed. Mean MAE per sample=%05.3f", np.mean(pred_summary["obs"]["mae"]))
-    logging.info("Prediction time: %.2f seconds", end - start)
     pred_dict = results_to_dict(pred_summary)
     pred_df = pd.DataFrame(pred_dict)
     return pred_dict, pred_df

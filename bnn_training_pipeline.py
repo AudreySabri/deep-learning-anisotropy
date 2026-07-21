@@ -1,6 +1,6 @@
 import logging
+import time
 from pathlib import Path
-from time import perf_counter
 from typing import Optional
 
 import hydra
@@ -43,7 +43,6 @@ def train_bnn(config: DictConfig) -> Optional[float]:
         config.model,
         dataset_size=datamodule.train_size
     )
-
     log.info(f"Model instantiated with {sum(p.numel() for p in model.parameters())} parameters")
     # 2. guide
     guide = hydra.utils.instantiate(
@@ -67,11 +66,15 @@ def train_bnn(config: DictConfig) -> Optional[float]:
     )
     log.info(f"Inference algorithm instantiated")
 
+    # Init loggers and out dir
     log.info(f"Instantiating Tensorboard logger")
     log_dir = Path(config.log_dir)
     log_dir.mkdir(parents=True, exist_ok=True)
+    save_dir = Path(config.save_dir)
+    save_dir.mkdir(parents=True, exist_ok=True)
     writer = SummaryWriter(log_dir=config.log_dir)
 
+    # Train the model
     if config.get("train"):
         log.info(f"Starting training!")
         hydra.utils.call(
@@ -82,13 +85,9 @@ def train_bnn(config: DictConfig) -> Optional[float]:
             device=config.trainer.device,
             writer=writer,
         )
-
         log.info(f"Training completed")
+
         log.info("Saving model and guide")
-
-        save_dir = Path(config.save_dir)
-        save_dir.mkdir(parents=True, exist_ok=True)
-
         torch.save({
             "model": model.state_dict(),
             "guide": guide
@@ -99,15 +98,15 @@ def train_bnn(config: DictConfig) -> Optional[float]:
 
     if config.get("test"):
         log.info("Starting prediction on test set!")
-        start_mem = utils._get_memory_usage_mb()
 
-        if config.get("load_model"):
+        start = time.time()
+        start_mem = utils._get_memory_usage_mb()
+        if config.get("load_testing_model"):
             log.info(f"Loading model and guide from disk")
             checkpoint = torch.load(config.test_model_path, weights_only=False)
             model.load_state_dict(checkpoint["model"])
             guide = checkpoint["guide"]
             pyro.get_param_store().load(config.test_param_store_path)
-
         predictive = pyro.infer.Predictive(model, 
                                            guide=guide, 
                                            num_samples=config.get("test_num_samples"),
@@ -121,10 +120,11 @@ def train_bnn(config: DictConfig) -> Optional[float]:
             device=config.predictor.device,
             scaler=datamodule.return_target_scaler,
         )
-
+        end = time.time()
         end_mem = utils._get_memory_usage_mb()
 
         log.info(f"Prediction completed")
+        log.info("Prediction time: %.2f seconds", end - start)
         log.info("Memory usage: %.2f MB" % (end_mem - start_mem))
 
         log.info("Saving predictions to disk")
@@ -144,16 +144,20 @@ def train_bnn(config: DictConfig) -> Optional[float]:
         from data.dataloaders import create_dataloader
 
         log.info(f"Starting prediction")
+
+        start = time.time()
         start_mem = utils._get_memory_usage_mb()
 
-        pred_df = config.get("prediction_dataset_path")
+        pred_db = config.get("prediction_dataset_path")
         pred_dataset = CSVDataset(
-                        df_path=pred_df,
+                        df_path=pred_db,
                         input_pattern=config.datamodule.input_pattern,
                         target_pattern=config.datamodule.target_pattern,
                     )
-        pred_dataset.data = datamodule.return_input_scaler.transform(pred_dataset.data)
-        pred_dataset.targets = datamodule.return_target_scaler.transform(pred_dataset.targets)
+        input_scaler = datamodule.return_input_scaler
+        target_scaler = datamodule.return_target_scaler
+        pred_dataset.data = input_scaler.transform(pred_dataset.data)
+        pred_dataset.targets = target_scaler.transform(pred_dataset.targets)
         pred_dl = create_dataloader(
                             dataset=pred_dataset,
                             batch_size=config.datamodule.batch_size,
@@ -168,7 +172,6 @@ def train_bnn(config: DictConfig) -> Optional[float]:
             model.load_state_dict(checkpoint["model"])
             guide = checkpoint["guide"]
             pyro.get_param_store().load(config.pred_param_store_path)
-
         predictive = pyro.infer.Predictive(model, 
                                            guide=guide, 
                                            num_samples=config.get("pred_num_samples"),
@@ -179,12 +182,13 @@ def train_bnn(config: DictConfig) -> Optional[float]:
             predictive=predictive,
             dataloader=pred_dl,
             device=config.predictor.device,
-            scaler=datamodule.return_target_scaler,
+            scaler=target_scaler,
         )
 
+        end = time.time()
         end_mem = utils._get_memory_usage_mb()
 
-        log.info(f"Prediction completed")
+        log.info("Prediction time: %.2f seconds", end - start)
         log.info("Memory usage: %.2f MB" % (end_mem - start_mem))
 
         log.info("Saving predictions to disk")

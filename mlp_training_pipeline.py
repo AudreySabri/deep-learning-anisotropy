@@ -44,7 +44,6 @@ def train_mlp(config: DictConfig) -> Optional[float]:
     model = hydra.utils.instantiate(
         config.model,
     )
-
     log.info(f"Model instantiated with {sum(p.numel() for p in model.parameters())} parameters")
 
     # Init loss
@@ -63,7 +62,7 @@ def train_mlp(config: DictConfig) -> Optional[float]:
     )
     log.info(f"Optimizer instantiated")
 
-    # Init loggers
+    # Init loggers and out dir
     log.info(f"Instantiating Tensorboard logger")
     log_dir = Path(config.log_dir)
     log_dir.mkdir(parents=True, exist_ok=True)
