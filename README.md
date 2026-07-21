@@ -24,39 +24,34 @@ The repo structure is as follows:
     │   │    └── data_config.py     # Data configuration
     │   │── launcher
     │   │    └── launcher_config.py     # Slurm configuration
-    │   │── logging
-    │   │    └── logging_config.py      # Logging configuration for MLP 
     │   ├── model
     │   │    ├── bnn_config.py          # Model configuration if using BNN
     │   │    └── mlp_config.py          # Model configuration if using MLP
     │   ├── trainer
     │   │    ├── bnn_trainer_config.py      # Training configuration if using BNN
     │   │    └── mlp_trainer_config.py      # Training configuration if using MLP
-    │   ├── bnn_hpo_config.py       # Pipeline config (directories, filenames, etc.) if using BNN
-    │   │── mlp_hpo_config.py       # Pipeline config if using MLP
+    │   ├── bnn_pipeline_config.py       # Pipeline config (directories, filepaths, etc.) if using BNN
+    │   │── mlp_pipeline_config.py       # Pipeline config if using MLP
     ├── data        # Datamodule instantiation with helper functions
     │   ├── anisotropy_datamodule.py
     │   ├── csv_dataset.py
     │   └── dataloaders.py
-    ├── loggers     # Logger utilities for MLP Lightning framework
-    │   └── tensorboard_utils.py
     ├── models      # Networks used in this work and their components
     │   ├── bnn
     │   │   ├── bnn_components.py
     │   │   ├── bnn_predict.py    
     │   │   ├── bnn_trainer.py    
-    │   │   └── bnn.py
+    │   │   └── network.py
     │   ├── mlp
-    │   │   ├── mlp_lightning_module.py
-    │   │   └── mlp.py    
+    │   │   ├── mlp_trainer.py
+    │   │   └── network.py    
     ├── utils
     │   ├── __init__.py
     │   └── plotting.py
-    ├── scripts     
-    │   ├── bnn_hpo.sh
-    │   └── mlp_hpo.sh
+    ├── scripts     # Submission scripts
+    │   └── multirun.sh
     ├── requirements.txt
-    ├── .env        # Please specify directory to your database here
+    ├── .env        # Please specify model config (bnn or mlp) and directory to your training database here
     ├── bnn_training_pipeline.py
     ├── mlp_training_pipeline.py
     └── train.py        # Main file to execute

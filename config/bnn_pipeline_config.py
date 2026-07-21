@@ -22,17 +22,17 @@ from config.model.bnn_config import (
 defaults: List[Union[str, Dict[str, str]]] = [
     "_self_",
     {"datamodule": "anisotropy"},
-    {"trainer": "cpu"},
     {"model": "partial_bnn"},
     {"guide": "low_rank"},
     {"optimizer": "adam"},
     {"inference": "svi"},
+    {"trainer": "cpu"},
     {"predictor": "bnn_predictor"},
     {"override /hydra/launcher": "submitit_slurm_local"},
 ]
 
 @dataclass
-class HPOConfig:
+class PipelineConfig:
     defaults: List[Any] = field(default_factory=lambda: defaults)
     hydra: Any = field(default_factory=lambda: HydraConf())
     seed: int = 42
@@ -74,7 +74,7 @@ class HPOConfig:
 
     launcher: Any = field(default_factory=SlurmConfig)
 
-def register_configs():
+def register_bnn_configs():
     cs = ConfigStore()
     cs.store(group="datamodule", name="anisotropy", node=DataConfig)
     cs.store(group="trainer", name="cpu", node=SVITrainerConfig)
@@ -85,4 +85,4 @@ def register_configs():
     cs.store(group="inference", name="svi", node=SVIConfig)
     cs.store(group="predictor", name="bnn_predictor", node=BNNPredictorConfig)
     cs.store(group="hydra/launcher", name="submitit_slurm_local", node=SlurmConfig)
-    cs.store(name="bnn_hpo", node=HPOConfig)
+    cs.store(name="bnn", node=PipelineConfig)

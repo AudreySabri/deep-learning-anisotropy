@@ -1,119 +1,191 @@
 from pathlib import Path
 from typing import List, Optional
 
+import torch
 import hydra
 import pandas as pd
 from omegaconf import DictConfig
 from pytorch_lightning import (
-    Callback,
     LightningDataModule,
-    LightningModule,
-    Trainer,
     seed_everything,
 )
-from pytorch_lightning.loggers import Logger
+from torch.utils.tensorboard import SummaryWriter
 
 import utils
+from utils.plotting import plot_mlp_predictions
+
 
 log = utils.get_logger(__name__)
 
-
 # pylint: disable = protected-access
-def train(config: DictConfig) -> Optional[float]:
+def train_mlp(config: DictConfig) -> Optional[float]:
     """
     Training pipeline.
     Can additionally evaluate model on a testset, using best weights achieved during training.
 
     Args:
         config (DictConfig): Configuration composed by Hydra.
-
-    Returns:
-        Optional[float]: Metric score for hyperparameter optimization.
     """
 
     # Set seed for random number generators in pytorch, numpy and python.random
     if config.get("seed"):
-        seed_everything(config.seed, workers=True)
+        seed_everything(config.seed)
 
-    # Init lightning datamodule
+    # Init datamodule
     log.info(f"Instantiating datamodule <{config.datamodule._target_}>")
     datamodule: LightningDataModule = hydra.utils.instantiate(config.datamodule)
+    datamodule.setup()
+    train_dl = datamodule.train_dataloader()
+    val_dl = datamodule.val_dataloader()
 
-    # Init lightning model
+    # Init model
     log.info(f"Instantiating model <{config.model._target_}>")
-    model: LightningModule = hydra.utils.instantiate(config.model)
-
-    # Init loggers
-    loggers: List[Logger] = []
-    tensorboard_logger = None
-    callbacks: List[Callback] = []
-    if "loggers" in config:
-        for key, logger in config.loggers.items():
-            logger_name = logger._target_
-            log.info(f"Instantiating logger <{logger_name}>")
-            # Check if it is tensorboard_logger -- we need this for tensorboard model callbacks
-            if key == "tensorboard":
-                tensorboard_logger = hydra.utils.instantiate(logger)
-                loggers.append(tensorboard_logger)
-            else:
-                loggers.append(hydra.utils.instantiate(logger))
-
-    # Init callbacks
-    if "callbacks" in config:
-        for key, callback in config.callbacks.items():
-            callback_name = callback._target_
-            log.info(f"Instantiating callback <{callback_name}>")
-            if key == "tensorboard_checkpoint" and tensorboard_logger is not None:
-
-                callbacks.append(
-                    hydra.utils.instantiate(callback, dirpath=tensorboard_logger.save_dir)
-                )
-            else:
-                callbacks.append(hydra.utils.instantiate(callback))
-
-    # Init lightning trainer
-    log.info(f"Instantiating trainer <{config.trainer._target_}>")
-    trainer: Trainer = hydra.utils.instantiate(
-        config.trainer, callbacks=callbacks, logger=loggers, _convert_="partial", deterministic=True,
+    model = hydra.utils.instantiate(
+        config.model,
     )
 
-    # Send some parameters from config to all lightning loggers
-  #  log.info("Logging hyperparameters!")
-  #  utils.log_hyperparameters(
-  #      config=config, trainer=trainer,
-  #  )
+    log.info(f"Model instantiated with {sum(p.numel() for p in model.parameters())} parameters")
+
+    # Init loss
+    loss = hydra.utils.instantiate(
+        config.loss,
+    )
+    log.info(f"Loss instantiated")
+
+    # Init optimizer
+    optimizer = hydra.utils.instantiate(
+        config.optimizer,
+        params= model.parameters()
+    )
+    log.info(f"Optimizer instantiated")
+
+    # Init loggers
+    log.info(f"Instantiating Tensorboard logger")
+    log_dir = Path(config.log_dir)
+    log_dir.mkdir(parents=True, exist_ok=True)
+    writer = SummaryWriter(log_dir=config.log_dir)
 
     # Train the model
     if config.get("train"):
         log.info("Starting training!")
-        trainer.fit(model=model, datamodule=datamodule)
-
-    # Get metric score for hyperparameter optimization
-    optimized_metric = config.get("optimized_metric")
-    if optimized_metric and optimized_metric not in trainer.callback_metrics:
-        raise Exception(
-            "Metric for hyperparameter optimization not found! "
-            "Make sure the `optimized_metric` in `hparams_search` config is correct!"
+        hydra.utils.call(
+            config.trainer,
+            model=model,
+            train_dl=train_dl,
+            val_dl=val_dl,
+            optimizer=optimizer,
+            loss_fn=loss,
+            metric_fn=config.tracking_metric,
+            num_epochs=config.trainer.num_epochs,
+            save_dir=Path(config.save_dir),
+            writer=writer,
+            cuda=config.trainer.cuda,
         )
-    score = trainer.callback_metrics.get(optimized_metric).item()
+        log.info(f"Training completed")
 
     if config.get("test"):
         log.info("Starting prediction on test set!")
-        test_out = trainer.test(model=model, datamodule=datamodule)
-        target_scaler = datamodule.return_target_scaler
-        for batch_results in test_out:
-            print(batch_results)
-            for i in range(len(batch_results["preds"])):
-                batch_results["preds"][i] = target_scaler.inverse_transform(batch_results["preds"][i].detach())
-                batch_results["targets"][i] = target_scaler.inverse_transform(batch_results["targets"][i].detach())
-        test_results = {k: v.detach() for batch in test_out for k, v in batch.items()}
+        start_mem = utils._get_memory_usage_mb()
+
+        if config.get("load_testing_model"):
+            log.info(f"Loading model from disk")
+            checkpoint = torch.load(config.test_model_path, weights_only=False)
+            model.load_state_dict(checkpoint)
+        test_dl = datamodule.test_dataloader()
+        predictions, ground_truth, tracking_metric = hydra.utils.call(
+            config.predictor,
+            model=model,
+            pred_dl=test_dl,
+            metric_fn=config.tracking_metric,
+            cuda=config.predictor.cuda,
+        )
+
+        end_mem = utils._get_memory_usage_mb()
+        log.info(f"Prediction completed")
+        log.info("Memory usage: %.2f MB" % (end_mem - start_mem))
+
         log.info("Saving predictions to disk")
+        target_scaler=datamodule.return_target_scaler()
+        predictions = target_scaler.inverse_transform(predictions)
+        ground_truth= target_scaler.inverse_transform(ground_truth)
+
+        test_results = {}
+        target_features=datamodule.return_target_names()
+        for i, feature_name in enumerate(target_features):
+            test_results [f'ground_truth_{feature_name}'] = ground_truth[:, i]
+            test_results [f'predictions_{feature_name}'] = predictions[:, i]
+        test_df = pd.DataFrame(test_results)
         test_dir = Path(config.get("test_results_dir"))
         test_dir.mkdir(parents=True, exist_ok=True)
-        test_df = pd.DataFrame(test_results)
+        if config.get("plot_test_results"):
+            plot_mlp_predictions(
+                results_dict=test_results,
+                target_features=datamodule.return_target_names(),
+                save_dir=test_dir,
+                filename=config.get("test_results_plot")
+            )
         test_df.to_csv(test_dir/ config.get("test_results_file"), index=False)
+    
+    if config.get("predict"):
+        from data.csv_dataset import CSVDataset
+        from data.dataloaders import create_dataloader
 
+        log.info(f"Starting prediction")
+        start_mem = utils._get_memory_usage_mb()
+
+        pred_db = config.get("prediction_dataset_path")
+        pred_dataset = CSVDataset(
+                        df_path=pred_db,
+                        input_pattern=config.datamodule.input_pattern,
+                        target_pattern=config.datamodule.target_pattern,
+                    )
+        input_scaler = datamodule.return_input_scaler
+        target_scaler = datamodule.return_target_scaler
+        pred_dataset.data = input_scaler.transform(pred_dataset.data)
+        pred_dataset.targets = target_scaler.transform(pred_dataset.targets)
+        pred_dl = create_dataloader(
+                            dataset=pred_dataset,
+                            batch_size=config.datamodule.batch_size,
+                            num_workers=config.datamodule.num_workers,
+                            shuffle=False,
+                            pin_memory=config.datamodule.cuda,
+                        )
+
+        if config.get("load_predictive_model"):
+            log.info(f"Loading model and guide from disk")
+            checkpoint = torch.load(config.pred_model_path, weights_only=False)
+            model.load_state_dict(checkpoint)
+        predictions, ground_truth, tracking_metric = hydra.utils.call(
+            config.predictor,
+            model=model,
+            pred_dl=pred_dl,
+            metric_fn=config.tracking_metric,
+            cuda=config.predictor.cuda,
+        )
+
+        end_mem = utils._get_memory_usage_mb()
+        log.info(f"Prediction completed")
+        log.info("Memory usage: %.2f MB" % (end_mem - start_mem))
+
+        log.info("Saving predictions to disk")
+        predictions = target_scaler.inverse_transform(predictions)
+        ground_truth= target_scaler.inverse_transform(ground_truth)
+
+        pred_results = {}
+        target_features=datamodule.return_target_names()
+        for i, feature_name in enumerate(target_features):
+            pred_results[f'ground_truth_{feature_name}'] = ground_truth[:, i]
+            pred_results[f'predictions_{feature_name}'] = predictions[:, i]
+        pred_df = pd.DataFrame(pred_results)
+        pred_dir = Path(config.get("predictions_dir"))
+        pred_dir.mkdir(parents=True, exist_ok=True)
+        if config.get("plot_pred"):
+            plot_mlp_predictions(
+                results_dict=pred_results,
+                target_features=target_features,
+                save_dir=pred_dir,
+                filename=config.get("predictions_plot")
+            )
+        pred_df.to_csv(pred_dir/ config.get("predictions_file"), index=False)
+    
     log.info("Finalizing!")
-    print(score)
-    # Return metric score for hyperparameter optimization
-    return score

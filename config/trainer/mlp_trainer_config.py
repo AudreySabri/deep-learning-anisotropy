@@ -22,7 +22,7 @@ class MLPTrainerConfig:
 
 
 @dataclass
-class MLPPredictConfig:
+class PredictorConfig:
     _target_: str = fullname(predict)
     model: Any = MISSING
     pred_dl: Any = MISSING

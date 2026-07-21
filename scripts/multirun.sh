@@ -14,7 +14,7 @@ module purge
 
 # Hyperparameter config:
 #HYPERPARAMETERS="model.hidden_dim=choice(21,42,84) trainer.max_epochs=choice(100,150,200)"
-HYPERPARAMETERS="model.net.hidden_dim=choice(42,84)"
+HYPERPARAMETERS="model.hidden_dim=choice(42,84)"
 
 source ~/miniconda3/etc/profile.d/conda.sh
 conda activate vpsc-hill-ml
@@ -28,5 +28,5 @@ export MKL_NUM_THREADS=1
 export PYTHONFAULTHANDLER=1
 export HYDRA_FULL_ERROR=1 
 # the hyperparam search below will spawn nodes and report to mlflow automatically
-python mlp_train.py --multirun $HYPERPARAMETERS &
+python train.py --multirun $HYPERPARAMETERS &
 wait

@@ -19,7 +19,7 @@ from utils.plotting import plot_bnn_predictions
 
 log = utils.get_logger(__name__)
 
-def train(config: DictConfig) -> Optional[float]:
+def train_bnn(config: DictConfig) -> Optional[float]:
     """
     Contains an example training pipeline.
     Can additionally evaluate model on a testset, using best weights achieved during training.
@@ -43,7 +43,6 @@ def train(config: DictConfig) -> Optional[float]:
         config.model,
         dataset_size=datamodule.train_size
     )
-
 
     log.info(f"Model instantiated with {sum(p.numel() for p in model.parameters())} parameters")
     # 2. guide
@@ -74,7 +73,7 @@ def train(config: DictConfig) -> Optional[float]:
     writer = SummaryWriter(log_dir=config.log_dir)
 
     if config.get("train"):
-        log.info(f"Starting training <{config.trainer._target_}>")
+        log.info(f"Starting training!")
         hydra.utils.call(
             config.trainer,
             svi=svi,
@@ -120,7 +119,7 @@ def train(config: DictConfig) -> Optional[float]:
             predictive=predictive,
             dataloader=test_dl,
             device=config.predictor.device,
-            scaler=datamodule.return_target_scaler,
+            scaler=datamodule.return_target_scaler(),
         )
 
         end_mem = utils._get_memory_usage_mb()
@@ -131,10 +130,10 @@ def train(config: DictConfig) -> Optional[float]:
         log.info("Saving predictions to disk")
         test_dir = Path(config.get("test_results_dir"))
         test_dir.mkdir(parents=True, exist_ok=True)
-        if config.get("plot_pred"):
+        if config.get("plot_test_results"):
             plot_bnn_predictions(
                 results_dict=test_results,
-                target_features=datamodule.return_target_names,
+                target_features=datamodule.return_target_names(),
                 save_dir=test_dir,
                 filename=config.get("test_results_plot")
             )
@@ -180,7 +179,7 @@ def train(config: DictConfig) -> Optional[float]:
             predictive=predictive,
             dataloader=pred_dl,
             device=config.predictor.device,
-            scaler=datamodule.return_target_scaler,
+            scaler=datamodule.return_target_scaler(),
         )
 
         end_mem = utils._get_memory_usage_mb()
@@ -194,7 +193,7 @@ def train(config: DictConfig) -> Optional[float]:
         if config.get("plot_pred"):
             plot_bnn_predictions(
                 results_dict=predictions,
-                target_features=datamodule.return_target_names,
+                target_features=datamodule.return_target_names(),
                 save_dir=pred_dir,
                 filename=config.get("predictions_plot")
             )

@@ -1,6 +1,8 @@
+from typing import Any
 from dataclasses import dataclass
 
 import torch
+from omegaconf import MISSING
 
 from models.mlp.network import MLP
 from utils import fullname
@@ -16,6 +18,7 @@ class MLPConfig:
 @dataclass
 class AdamOptimizerConfig:
     _target_: str = fullname(torch.optim.Adam)
+    params: Any = MISSING
     lr: float = 0.001
     weight_decay: float = 0.0005
 
