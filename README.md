@@ -2,7 +2,42 @@
 
 BNN and MLP regressors trained to predict polycrystalline texture viscous anisotropy, as parameterized by the Hill orthotropic yield criterion. These regressors may also be used to predict texture rotations. To use our model, textures must be represented by their 21 independent elasticity tensor components. 
 
-To skip ahead and simply run our trained model on a prediction dataset (....)
+## Quickstart
+
+To skip ahead and simply run our trained model on a prediction dataset:
+
+1. Specify the model (**mlp** or **bnn**) and the path to the training database in <code>.env</code>.
+
+2. Go to the respective <code>/config/{mlp or bnn}_pipeline_config.py</code> (mlp or bnn) file
+
+3. Set:
+
+```
+train: bool = False
+
+test: bool = False
+
+predict: bool = True
+
+```
+
+4. Specify the paths to the prediction dataset, trained model, etc.:
+
+```
+prediction_dataset_path : str = "/home/sabria/scratch_sabria/vpsc-hill/data/poly.csv"
+load_predictive_model: bool = True
+pred_model_path: str = "/path/to/trained/model"
+pred_param_store_path: str = "/path/to/trained/model/params/"   #In case you're using BNN
+
+```
+
+5. Run the command:
+
+```
+python train.py 
+```
+
+Depending on your available resources, it is advised that you tune the Slurm configuration in the <code>/config/launcher/launcher_config.py</code>
 
 ## Description
 
@@ -78,7 +113,7 @@ pip install -r requirements.txt
 
 ### Execution
 
-First, you must specify the path to your training database in <code>.env</code>.
+First, you must specify the model (**mlp** or **bnn**) and the path to your training database in <code>.env</code>.
 
 In case you want to train a model from scratch, you must specify your desired configurations in the config folder as described above. Depending on the type of network that you want to train, in the respective <code>pipeline_config.py</code> file, make sure to set 
 
