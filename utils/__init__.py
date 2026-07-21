@@ -1,11 +1,10 @@
 import logging
 import os
 import resource
-import psutil
+import psutil, shutil
 from typing import Any
 
-import pytorch_lightning as pl
-from omegaconf import DictConfig, OmegaConf
+import torch
 from pytorch_lightning.utilities import rank_zero_only
 
 def fullname(cls: Any) -> str:
@@ -51,37 +50,18 @@ def get_logger(name=__name__) -> logging.Logger:
 
 log = get_logger(__name__)
 
+def save_checkpoint(state, is_best, save_dir):
+    """Saves model and training parameters at checkpoint + 'last.pth.tar'. If is_best==True, also saves
+    checkpoint + 'best.pth.tar'
 
-@rank_zero_only
-def log_hyperparameters(
-    config: DictConfig,
-    trainer: pl.Trainer,
-) -> None:
-    # pylint: disable = protected-access
-    """Controls which config parts are saved by Lightning loggers.
-
-    Additionally saves:
-    - number of model parameters
+    Args:
+        state: (dict) contains model's state_dict, may contain other keys such as epoch, optimizer state_dict
+        is_best: (bool) True if it is the best model seen till now
+        save_dir: (string) folder where parameters are to be saved
     """
+    save_dir.mkdir(parents=True, exist_ok=True)
+    filepath = os.path.join(save_dir, 'last.pth.tar')
+    torch.save(state, filepath)
+    if is_best:
+        shutil.copyfile(filepath, os.path.join(save_dir, 'best.pth.tar'))
 
-    hparams = {}
-
-    # choose which parts of hydra config will be saved to loggers
-    hparams["model"] = config["model"]
-    hparams["datamodule"] = config["datamodule"]
-    hparams["trainer"] = config["trainer"]
-
-    if "seed" in config:
-        hparams["seed"] = config["seed"]
-    if "callbacks" in config:
-        for _, callback in config["callbacks"].items():
-            hparams[f"callbacks/{str(callback._target_)}"] = callback
-
-    # send hparams to all loggers
-    trainer.logger.log_hyperparams(
-        OmegaConf.to_container(
-            hparams,
-            resolve=False,
-            throw_on_missing=False,
-            )
-        )
