@@ -1,3 +1,4 @@
+import time
 from pathlib import Path
 from typing import List, Optional
 
@@ -50,7 +51,10 @@ def train_mlp(config: DictConfig) -> Optional[float]:
     loss = hydra.utils.instantiate(
         config.loss,
     )
-    log.info(f"Loss instantiated")
+    metric_fn = hydra.utils.instantiate(
+        config.metric_fn,
+    )
+    log.info(f"Loss and tracking metric instantiated")
 
     # Init optimizer
     optimizer = hydra.utils.instantiate(
@@ -63,6 +67,8 @@ def train_mlp(config: DictConfig) -> Optional[float]:
     log.info(f"Instantiating Tensorboard logger")
     log_dir = Path(config.log_dir)
     log_dir.mkdir(parents=True, exist_ok=True)
+    save_dir = Path(config.save_dir)
+    save_dir.mkdir(parents=True, exist_ok=True)
     writer = SummaryWriter(log_dir=config.log_dir)
 
     # Train the model
@@ -75,7 +81,7 @@ def train_mlp(config: DictConfig) -> Optional[float]:
             val_dl=val_dl,
             optimizer=optimizer,
             loss_fn=loss,
-            metric_fn=config.tracking_metric,
+            metric_fn=metric_fn,
             num_epochs=config.trainer.num_epochs,
             save_dir=config.save_dir,
             writer=writer,
@@ -85,32 +91,34 @@ def train_mlp(config: DictConfig) -> Optional[float]:
 
     if config.get("test"):
         log.info("Starting prediction on test set!")
+        
+        start = time.time()
         start_mem = utils._get_memory_usage_mb()
-
         if config.get("load_testing_model"):
             log.info(f"Loading model from disk")
             checkpoint = torch.load(config.test_model_path, weights_only=False)
             model.load_state_dict(checkpoint)
         test_dl = datamodule.test_dataloader()
-        predictions, ground_truth, tracking_metric = hydra.utils.call(
+        predictions, ground_truth = hydra.utils.call(
             config.predictor,
             model=model,
             pred_dl=test_dl,
-            metric_fn=config.tracking_metric,
+            metric_fn=metric_fn,
             cuda=config.predictor.cuda,
         )
-
+        end = time.time()
         end_mem = utils._get_memory_usage_mb()
-        log.info(f"Prediction completed")
+
+        log.info("Prediction time: %.2f seconds", end - start)
         log.info("Memory usage: %.2f MB" % (end_mem - start_mem))
 
         log.info("Saving predictions to disk")
-        target_scaler=datamodule.return_target_scaler()
+        target_scaler=datamodule.return_target_scaler
         predictions = target_scaler.inverse_transform(predictions)
         ground_truth= target_scaler.inverse_transform(ground_truth)
 
         test_results = {}
-        target_features=datamodule.return_target_names()
+        target_features=datamodule.return_target_names
         for i, feature_name in enumerate(target_features):
             test_results [f'ground_truth_{feature_name}'] = ground_truth[:, i]
             test_results [f'predictions_{feature_name}'] = predictions[:, i]
@@ -120,7 +128,7 @@ def train_mlp(config: DictConfig) -> Optional[float]:
         if config.get("plot_test_results"):
             plot_mlp_predictions(
                 results_dict=test_results,
-                target_features=datamodule.return_target_names(),
+                target_features=datamodule.return_target_names,
                 save_dir=test_dir,
                 filename=config.get("test_results_plot")
             )
@@ -130,7 +138,8 @@ def train_mlp(config: DictConfig) -> Optional[float]:
         from data.csv_dataset import CSVDataset
         from data.dataloaders import create_dataloader
 
-        log.info(f"Starting prediction")
+        log.info(f"Starting prediction on specified dataset!")
+        start = time.time()
         start_mem = utils._get_memory_usage_mb()
 
         pred_db = config.get("prediction_dataset_path")
@@ -155,16 +164,17 @@ def train_mlp(config: DictConfig) -> Optional[float]:
             log.info(f"Loading model and guide from disk")
             checkpoint = torch.load(config.pred_model_path, weights_only=False)
             model.load_state_dict(checkpoint)
-        predictions, ground_truth, tracking_metric = hydra.utils.call(
+        predictions, ground_truth = hydra.utils.call(
             config.predictor,
             model=model,
             pred_dl=pred_dl,
-            metric_fn=config.tracking_metric,
+            metric_fn=metric_fn,
             cuda=config.predictor.cuda,
         )
 
+        end = time.time()
         end_mem = utils._get_memory_usage_mb()
-        log.info(f"Prediction completed")
+        log.info("Prediction time: %.2f seconds", end - start)
         log.info("Memory usage: %.2f MB" % (end_mem - start_mem))
 
         log.info("Saving predictions to disk")
@@ -172,7 +182,7 @@ def train_mlp(config: DictConfig) -> Optional[float]:
         ground_truth= target_scaler.inverse_transform(ground_truth)
 
         pred_results = {}
-        target_features=datamodule.return_target_names()
+        target_features=datamodule.return_target_names
         for i, feature_name in enumerate(target_features):
             pred_results[f'ground_truth_{feature_name}'] = ground_truth[:, i]
             pred_results[f'predictions_{feature_name}'] = predictions[:, i]

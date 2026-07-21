@@ -11,23 +11,23 @@ def predict(model, pred_dl, metric_fn, cuda=False):
 
     predictions = []
     ground_truth = []
-    tracking_metric = []
+    tracking_metric = RunningAverage()
 
     for pred_batch, target_batch in pred_dl:
         if cuda:
             pred_batch, target_batch = pred_batch.cuda(non_blocking=True), target_batch.cuda(non_blocking=True)
         output_batch = model(pred_batch)
         metric = metric_fn(output_batch, target_batch)
+        tracking_metric.update(metric.item())
 
         output_batch = output_batch.data.detach().numpy()
         target_batch = target_batch.data.detach().numpy()
-        batch_metric = metric.item().detach().numpy()
 
         predictions.append(output_batch)
         ground_truth.append(target_batch)
-        tracking_metric.append(batch_metric)
-
-    return np.concatenate(predictions, axis=0), np.concatenate(ground_truth, axis=0), np.concatenate(tracking_metric, axis=0)
+    average_score = tracking_metric()
+    logging.info(f"Prediction completed. Average Score: {average_score:.4f}")
+    return np.concatenate(predictions, axis=0), np.concatenate(ground_truth, axis=0)
 
 def train_and_evaluate(model, train_dl, val_dl, optimizer, loss_fn, metric_fn, num_epochs, save_dir=None, writer=None, cuda=False):
 

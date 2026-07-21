@@ -2,13 +2,23 @@
 
 BNN and MLP regressors trained to predict polycrystalline texture viscous anisotropy, as parameterized by the Hill orthotropic yield criterion. These regressors may also be used to predict texture rotations. To use our model, textures must be represented by their 21 independent elasticity tensor components. 
 
+## Installing
+
+Our work was mainly developed in Python 3.10 using Pytorch 2.11 and Pyro 1.9, the probabilistic programming language built on top of it. Dependencies can be found in the <code>requirements.txt</code> file accompanying our repo. 
+
+Simply install the required libraries with pip using the command:
+
+```
+pip install -r requirements.txt
+```
+
 ## Quickstart
 
 To skip ahead and simply run our trained model on a prediction dataset:
 
 1. Specify the model (**mlp** or **bnn**) and the path to the training database in <code>.env</code>.
 
-2. Go to the respective <code>/config/{mlp or bnn}_pipeline_config.py</code> (mlp or bnn) file
+2. Go to the respective <code>/config/{mlp or bnn}_pipeline_config.py</code> file
 
 3. Set:
 
@@ -24,7 +34,7 @@ predict: bool = True
 4. Specify the paths to the prediction dataset, trained model, etc.:
 
 ```
-prediction_dataset_path : str = "/home/sabria/scratch_sabria/vpsc-hill/data/poly.csv"
+prediction_dataset_path : str = "path/to/your/dataset"
 load_predictive_model: bool = True
 pred_model_path: str = "/path/to/trained/model"
 pred_param_store_path: str = "/path/to/trained/model/params/"   #In case you're using BNN
@@ -45,11 +55,11 @@ Our BNN and MLP regressors were trained on polycrystalline olivine textures gene
 
 To be exact, our deformation paths consisted of 150 random combinations of pure sheer + axial extension veloctiy gradients, and 150 random combinations of pure sheer + axial compression veloctiy gradients. These textures were then augmented by 150 randomly generated rotations sampled from the orthorhombic fundamental zone.
 
-From our modified version of the VPSC code, we obtained the textures's stress and strain rates to compute the Hill yield surface coefficients in order to describe their anisotropy (see [Signorelli, et al.](https://doi.org/10.46298/jtcam.6737)). We also obtained the textures' Cijkl elasticity tensor components to represent them, of which we only need 21 components thanks to their symmetry. 
+From our modified version of the VPSC code, we obtained the textures' stress and strain rates to compute the Hill yield surface coefficients in order to describe their anisotropy (see [Signorelli, et al.](https://doi.org/10.46298/jtcam.6737)). We also obtained the textures' Cijkl elasticity tensor components to represent them, of which we only need 21 components thanks to their symmetry. 
 
 Through this texture representation, we were able to predict both the Hill coefficients and the texture rotations well enough and in adequate time so that the results of our model may further be used in a 3D thermo-mechanical finite-element code developed to model large-scale geodynamical flows.
 
-Our repository is built with <code>Hydra</code> to simplify executions over different configurations (hyperparameters, datasets, etc.) with a single line of code. The desired configuration can be specified by updating the <code>.py</code> filess within the <code>config</code> folder, or by running the appropreate command, as you will see in the **Execution** section. 
+Our repository is built with <code>Hydra</code> to simplify executions over different configurations (hyperparameters, datasets, etc.) with a single line of code. The desired configuration can be specified by updating the <code>.py</code> files within the <code>config</code> folder, or by running the appropreate command, as you will see in the **Execution** section. 
 
 Slurm job submission is simplified thanks to the <code>Submitit</code> library, with example scripts in the <code>scripts</code> folder. This will allow users to experiment with different datasets, hyperparameter tunings, or even prediction targets. 
 
@@ -97,47 +107,43 @@ The repo structure is as follows:
 
 To reproduce our results (...) 
 
-## Getting Started
-
-### Dependencies
-
-Our work was mainly developed in Python 3.10 using Pytorch 2.11 and Pyro 1.9, the probabilistic programming language built on top of it. Dependencies can be found in the <code>requirements.txt</code> file accompanying our repo. 
-
-### Installing
-
-Simply install the required libraries with pip using the command:
-
-```
-pip install -r requirements.txt
-```
-
-### Execution
+## Execution
 
 First, you must specify the model (**mlp** or **bnn**) and the path to your training database in <code>.env</code>.
 
-In case you want to train a model from scratch, you must specify your desired configurations in the config folder as described above. Depending on the type of network that you want to train, in the respective <code>pipeline_config.py</code> file, make sure to set 
+In case you want to train a model from scratch, you must specify your desired configurations in the config folder described above. Depending on the type of network that you want to train, in the respective respective <code>/config/{mlp or bnn}_pipeline_config.py</code> file, make sure to set 
 
 ```
 train: bool = True
 ```
-If you wish to subsequently perform a prediction with your trained model, set
+If you wish to subsequently test your trained model, set
 
 ```
-predict: bool = True
+test: bool = True
 ```
 
 If you wish to use a pre-trained model, please specify this with 
 
 ```
-train: bool = False
-
-predict: bool = True
-load_model: bool = True
-load_dir: str = "directory/to/your/model"
+test: bool = True
+load_testing_model: bool = True
+test_model_path: Optional[str] = "path/to/your/trained/model"
+test_param_store_path: Optional[str] = "path/to/params/"    # In case you're using BNN
 
 ```
 
-The execution command, for either/both training and predictions with your desired configuration and hyperparameters:
+Similarly, to use a trained model on a separate dataset, please specify this along with its path
+
+```
+predict: bool = True
+prediction_dataset_path : str = "path/to/your/dataset"  # Must be in .csv with column names matching training dataset
+load_predictive_model: bool = True
+pred_model_path: Optional[str] = "path/to/trained/model"
+pred_param_store_path: Optional[str] = "/path/to/trained/model/params/"    # In case you're using BNN
+
+```
+
+The execution command, for training, testing, and predictions with your desired configuration and hyperparameters:
 
 ```
 python train.py 
@@ -156,7 +162,11 @@ wait
 
 ```
 
-Outputs along with logs will appear in a separate folder. 
+Outputs along with logs will appear in a separate folder specified in <code>/config/{mlp or bnn}_pipeline_config.py</code>. 
+
+## Logging
+
+Our code offers tensorboard compatibility for logging. You will find your output dashboard in the log directory specified in <code>/config/{mlp or bnn}_pipeline_config.py</code>.
 
 ## Authors
 

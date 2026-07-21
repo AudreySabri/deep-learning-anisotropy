@@ -27,4 +27,8 @@ class AdamOptimizerConfig:
 class MSELossConfig:
     _target_: str = fullname(torch.nn.MSELoss)
 
+@dataclass
+class TrackingMetricConfig:
+    _target_: str = fullname(torch.nn.L1Loss)
+
 

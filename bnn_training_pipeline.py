@@ -119,7 +119,7 @@ def train_bnn(config: DictConfig) -> Optional[float]:
             predictive=predictive,
             dataloader=test_dl,
             device=config.predictor.device,
-            scaler=datamodule.return_target_scaler(),
+            scaler=datamodule.return_target_scaler,
         )
 
         end_mem = utils._get_memory_usage_mb()
@@ -133,7 +133,7 @@ def train_bnn(config: DictConfig) -> Optional[float]:
         if config.get("plot_test_results"):
             plot_bnn_predictions(
                 results_dict=test_results,
-                target_features=datamodule.return_target_names(),
+                target_features=datamodule.return_target_names,
                 save_dir=test_dir,
                 filename=config.get("test_results_plot")
             )
@@ -179,7 +179,7 @@ def train_bnn(config: DictConfig) -> Optional[float]:
             predictive=predictive,
             dataloader=pred_dl,
             device=config.predictor.device,
-            scaler=datamodule.return_target_scaler(),
+            scaler=datamodule.return_target_scaler,
         )
 
         end_mem = utils._get_memory_usage_mb()
@@ -193,7 +193,7 @@ def train_bnn(config: DictConfig) -> Optional[float]:
         if config.get("plot_pred"):
             plot_bnn_predictions(
                 results_dict=predictions,
-                target_features=datamodule.return_target_names(),
+                target_features=datamodule.return_target_names,
                 save_dir=pred_dir,
                 filename=config.get("predictions_plot")
             )
