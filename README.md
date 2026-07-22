@@ -79,7 +79,7 @@ The repo structure is as follows:
     │   │    └── mlp_trainer_config.py      # Training configuration if using MLP
     │   ├── bnn_pipeline_config.py       # Pipeline config (directories, filepaths, etc.) if using BNN
     │   │── mlp_pipeline_config.py       # Pipeline config if using MLP
-    ├── data        # Datamodule instantiation with helper functions
+    ├── data        # Datamodule with helper functions
     │   ├── anisotropy_datamodule.py
     │   ├── csv_dataset.py
     │   └── dataloaders.py
@@ -111,7 +111,7 @@ To reproduce our results (...)
 
 First, you must specify the model (**mlp** or **bnn**) and the path to your training database in <code>.env</code>.
 
-In case you want to train a model from scratch, you must specify your desired configurations in the config folder described above. Depending on the type of network that you want to train, in the respective respective <code>/config/{mlp or bnn}_pipeline_config.py</code> file, make sure to set 
+In case you want to train a model from scratch, you must specify your desired configurations in the config folder described above. Depending on the type of network that you want to train, in the respective <code>/config/{mlp or bnn}_pipeline_config.py</code> file, make sure to set 
 
 ```
 train: bool = True
@@ -162,7 +162,7 @@ wait
 
 ```
 
-Outputs along with logs will appear in a separate folder specified in <code>/config/{mlp or bnn}_pipeline_config.py</code>. 
+Outputs along with logs will appear in a separate folder as specified in <code>/config/{mlp or bnn}_pipeline_config.py</code>. 
 
 ## Logging
 
