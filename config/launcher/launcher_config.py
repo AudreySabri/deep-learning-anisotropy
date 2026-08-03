@@ -26,7 +26,7 @@ class SlurmConfig(SlurmQueueConf):
     mem_gb: int = 32
     nodes: int = 1
     timeout_min: int = 1200  # how long can the job run
-    array_parallelism: int = 1  # how many jobs can run simultaneously
+    array_parallelism: int = 3  # how many jobs can run simultaneously
     # other options include:
 
     # qos: Optional[str] = None

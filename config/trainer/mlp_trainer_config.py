@@ -15,7 +15,7 @@ class MLPTrainerConfig:
     optimizer: Any = MISSING
     loss_fn: Any = MISSING
     metric_fn: Any = MISSING
-    num_epochs: int = 3
+    num_epochs: int = 200
     save_dir: Optional[str] = MISSING
     writer: Optional[Any] = MISSING
     cuda: bool = False 

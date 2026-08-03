@@ -12,7 +12,7 @@ class SVITrainerConfig:
     _target_: str = fullname(SVITrainer)
     svi : Any = MISSING
     dataloader : Any = MISSING
-    num_epochs : int = 3
+    num_epochs : int = 50
     device : str = "cpu"  # or "cuda"   
     writer : Any = MISSING
 

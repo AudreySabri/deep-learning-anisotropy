@@ -1,0 +1,4 @@
+- datamodule.batch_size=512
+- model.hidden_dim=126
+- model.n_layers=4
+- model.prior_scale=0.01

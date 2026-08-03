@@ -96,7 +96,8 @@ def train_mlp(config: DictConfig) -> Optional[float]:
         if config.get("load_testing_model"):
             log.info(f"Loading model from disk")
             checkpoint = torch.load(config.test_model_path, weights_only=False)
-            model.load_state_dict(checkpoint)
+            state = checkpoint.state_dict()
+            model.load_state_dict(state)
         test_dl = datamodule.test_dataloader()
         predictions, ground_truth = hydra.utils.call(
             config.predictor,
@@ -160,9 +161,10 @@ def train_mlp(config: DictConfig) -> Optional[float]:
                         )
 
         if config.get("load_predictive_model"):
-            log.info(f"Loading model and guide from disk")
+            log.info(f"Loading model from disk")
             checkpoint = torch.load(config.pred_model_path, weights_only=False)
-            model.load_state_dict(checkpoint)
+            state = checkpoint.state_dict()
+            model.load_state_dict(state)
         predictions, ground_truth = hydra.utils.call(
             config.predictor,
             model=model,

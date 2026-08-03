@@ -1,0 +1,70 @@
+[2026-07-29 22:54:53,508][bnn_training_pipeline][INFO] - Instantiating datamodule <data.anisotropy_datamodule.AnisotropyDataModule>
+[2026-07-29 22:55:02,236][bnn_training_pipeline][INFO] - Instantiating model <models.bnn.network.PartialBNN>
+[2026-07-29 22:55:02,241][bnn_training_pipeline][INFO] - Model instantiated with 23268 parameters
+[2026-07-29 22:55:02,242][bnn_training_pipeline][INFO] - Guide instantiated with 0 parameters
+[2026-07-29 22:55:02,242][bnn_training_pipeline][INFO] - Loss instantiated
+[2026-07-29 22:55:02,244][bnn_training_pipeline][INFO] - Inference algorithm instantiated
+[2026-07-29 22:55:02,244][bnn_training_pipeline][INFO] - Instantiating Tensorboard logger
+[2026-07-29 22:55:02,247][bnn_training_pipeline][INFO] - Starting training!
+[2026-07-29 22:55:58,276][root][INFO] - Epoch 1/50, Loss: 947421.4564, MAE: 0.2369
+[2026-07-29 22:56:54,650][root][INFO] - Epoch 2/50, Loss: -1983300.9699, MAE: 0.0802
+[2026-07-29 22:57:51,870][root][INFO] - Epoch 3/50, Loss: -3262457.4128, MAE: 0.0515
+[2026-07-29 22:58:45,307][root][INFO] - Epoch 4/50, Loss: -3951058.8871, MAE: 0.0397
+[2026-07-29 22:59:48,633][root][INFO] - Epoch 5/50, Loss: -4212758.2368, MAE: 0.0352
+[2026-07-29 23:00:50,947][root][INFO] - Epoch 6/50, Loss: -4464798.1114, MAE: 0.0319
+[2026-07-29 23:01:47,813][root][INFO] - Epoch 7/50, Loss: -4954743.0323, MAE: 0.0278
+[2026-07-29 23:02:44,619][root][INFO] - Epoch 8/50, Loss: -5036343.5313, MAE: 0.0268
+[2026-07-29 23:03:35,817][root][INFO] - Epoch 9/50, Loss: -5204049.8904, MAE: 0.0248
+[2026-07-29 23:04:32,906][root][INFO] - Epoch 10/50, Loss: -5490650.9680, MAE: 0.0229
+[2026-07-29 23:05:31,819][root][INFO] - Epoch 11/50, Loss: -5160561.9235, MAE: 0.0250
+[2026-07-29 23:06:33,730][root][INFO] - Epoch 12/50, Loss: -5731247.6650, MAE: 0.0212
+[2026-07-29 23:07:33,066][root][INFO] - Epoch 13/50, Loss: -5508791.0904, MAE: 0.0228
+[2026-07-29 23:08:29,840][root][INFO] - Epoch 14/50, Loss: -5768335.1796, MAE: 0.0209
+[2026-07-29 23:09:30,710][root][INFO] - Epoch 15/50, Loss: -5499488.0111, MAE: 0.0222
+[2026-07-29 23:10:34,363][root][INFO] - Epoch 16/50, Loss: -5552647.9477, MAE: 0.0216
+[2026-07-29 23:11:30,204][root][INFO] - Epoch 17/50, Loss: -5953069.1429, MAE: 0.0198
+[2026-07-29 23:12:29,148][root][INFO] - Epoch 18/50, Loss: -5920425.4025, MAE: 0.0197
+[2026-07-29 23:13:26,796][root][INFO] - Epoch 19/50, Loss: -5666390.7036, MAE: 0.0219
+[2026-07-29 23:14:24,859][root][INFO] - Epoch 20/50, Loss: -5787094.7528, MAE: 0.0205
+[2026-07-29 23:15:30,067][root][INFO] - Epoch 21/50, Loss: -5988421.5065, MAE: 0.0190
+[2026-07-29 23:16:24,474][root][INFO] - Epoch 22/50, Loss: -6053682.6054, MAE: 0.0187
+[2026-07-29 23:17:30,473][root][INFO] - Epoch 23/50, Loss: -6022599.2873, MAE: 0.0189
+[2026-07-29 23:18:29,922][root][INFO] - Epoch 24/50, Loss: -6254336.4946, MAE: 0.0175
+[2026-07-29 23:19:34,558][root][INFO] - Epoch 25/50, Loss: -6350318.2483, MAE: 0.0172
+[2026-07-29 23:20:36,105][root][INFO] - Epoch 26/50, Loss: -6494571.3580, MAE: 0.0164
+[2026-07-29 23:21:37,282][root][INFO] - Epoch 27/50, Loss: -6424508.4715, MAE: 0.0171
+[2026-07-29 23:22:33,537][root][INFO] - Epoch 28/50, Loss: -6194738.8581, MAE: 0.0179
+[2026-07-29 23:23:30,422][root][INFO] - Epoch 29/50, Loss: -6708799.4935, MAE: 0.0156
+[2026-07-29 23:24:24,373][root][INFO] - Epoch 30/50, Loss: -6528225.8978, MAE: 0.0165
+[2026-07-29 23:25:20,493][root][INFO] - Epoch 31/50, Loss: -6289069.3622, MAE: 0.0169
+[2026-07-29 23:26:11,132][root][INFO] - Epoch 32/50, Loss: -6634187.0914, MAE: 0.0155
+[2026-07-29 23:27:03,925][root][INFO] - Epoch 33/50, Loss: -6735313.8282, MAE: 0.0154
+[2026-07-29 23:28:02,901][root][INFO] - Epoch 34/50, Loss: -6837779.1927, MAE: 0.0149
+[2026-07-29 23:28:55,678][root][INFO] - Epoch 35/50, Loss: -6509704.4718, MAE: 0.0163
+[2026-07-29 23:29:47,756][root][INFO] - Epoch 36/50, Loss: -6614516.3165, MAE: 0.0157
+[2026-07-29 23:30:45,399][root][INFO] - Epoch 37/50, Loss: -5790992.0571, MAE: 0.0191
+[2026-07-29 23:31:39,210][root][INFO] - Epoch 38/50, Loss: -6529827.0346, MAE: 0.0160
+[2026-07-29 23:32:38,579][root][INFO] - Epoch 39/50, Loss: -6970238.5260, MAE: 0.0141
+[2026-07-29 23:33:41,494][root][INFO] - Epoch 40/50, Loss: -6706691.8072, MAE: 0.0152
+[2026-07-29 23:34:34,952][root][INFO] - Epoch 41/50, Loss: -6611907.4014, MAE: 0.0158
+[2026-07-29 23:35:36,711][root][INFO] - Epoch 42/50, Loss: -7113572.2183, MAE: 0.0140
+[2026-07-29 23:36:35,680][root][INFO] - Epoch 43/50, Loss: -6625257.9719, MAE: 0.0155
+[2026-07-29 23:37:30,191][root][INFO] - Epoch 44/50, Loss: -7183514.8153, MAE: 0.0134
+[2026-07-29 23:38:21,814][root][INFO] - Epoch 45/50, Loss: -6514795.2300, MAE: 0.0155
+[2026-07-29 23:39:16,284][root][INFO] - Epoch 46/50, Loss: -6705135.0908, MAE: 0.0152
+[2026-07-29 23:40:06,334][root][INFO] - Epoch 47/50, Loss: -7183976.0771, MAE: 0.0131
+[2026-07-29 23:41:12,193][root][INFO] - Epoch 48/50, Loss: -6468941.5897, MAE: 0.0159
+[2026-07-29 23:42:02,983][root][INFO] - Epoch 49/50, Loss: -7003572.2086, MAE: 0.0137
+[2026-07-29 23:43:06,132][root][INFO] - Epoch 50/50, Loss: -6218090.7799, MAE: 0.0166
+[2026-07-29 23:43:06,132][root][INFO] - Training completed. Best Loss: -7183976.0771, Best MAE: 0.0131
+[2026-07-29 23:43:06,132][bnn_training_pipeline][INFO] - Training completed
+[2026-07-29 23:43:06,132][bnn_training_pipeline][INFO] - Saving model and guide
+[2026-07-29 23:43:06,142][bnn_training_pipeline][INFO] - Starting prediction on test set!
+[2026-07-29 23:45:02,603][root][INFO] - Prediction completed. Mean MAE per sample=0.004
+[2026-07-29 23:45:02,643][bnn_training_pipeline][INFO] - Prediction completed
+[2026-07-29 23:45:02,643][bnn_training_pipeline][INFO] - Prediction time: 116.50 seconds
+[2026-07-29 23:45:02,643][bnn_training_pipeline][INFO] - Memory usage: -3.02 MB
+[2026-07-29 23:45:02,643][bnn_training_pipeline][INFO] - Saving predictions to disk
+[2026-07-29 23:45:07,500][root][INFO] - Saved prediction plots to test_results
+[2026-07-29 23:45:09,779][submitit][INFO] - Job completed successfully
+[2026-07-29 23:45:09,783][submitit][INFO] - Exiting after successful completion

@@ -40,11 +40,11 @@ class PipelineConfig:
     train: bool = False
     save_dir: str = "./outputs"
     log_dir: str = "./logs"
-    trained_model: str = "trained_model.pt"
-    param_store: str = "param_store.pt"
+    trained_model: str = "trained_bnn_model.pt"
+    param_store: str = "bnn_param_store.pt"
 
-    test: bool = True
-    load_testing_model: bool = True
+    test: bool = False
+    load_testing_model: bool = False
     test_model_path: Optional[str] = None
     test_param_store_path: Optional[str] = None
     test_num_samples: int = 20
@@ -54,15 +54,15 @@ class PipelineConfig:
     test_results_plot: Optional[str] = "test_results.png"
 
     predict: bool = True
-    prediction_dataset_path : Optional[str] = None
-    load_predictive_model: bool = True
-    pred_model_path: Optional[str] = None
-    pred_param_store_path: Optional[str] = None
+    prediction_dataset_path : Optional[str] = "/home/sabria/scratch_sabria/deep-learning-anisotropy/datasets/polynesia_db.csv"
+    load_predictive_model: Optional[bool] = True
+    pred_model_path: Optional[str] = "/home/sabria/scratch_sabria/deep-learning-anisotropy/trained_models/trained_bnn_hill/outputs/trained_bnn_model.pt"
+    pred_param_store_path: Optional[str] = "/home/sabria/scratch_sabria/deep-learning-anisotropy/trained_models/trained_bnn_hill/outputs/bnn_param_store.pt"
     pred_num_samples: int = 20
-    predictions_file: str = "predictions.csv"
+    predictions_file: str = "polynesia_predictions.csv"
     predictions_dir: str = "./predictions"
     plot_pred: bool = True
-    predictions_plot: Optional[str] = "predictions.png"
+    predictions_plot: Optional[str] = "polynesia_predictions.png"
 
     datamodule: Any = MISSING
     trainer: Any = MISSING

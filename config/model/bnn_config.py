@@ -14,9 +14,9 @@ class PartialBNNConfig:
     _target_: str = fullname(PartialBNN)
     input_dim: int = 21
     output_dim: int = 6
-    hidden_dim: int = 81
-    n_layers: int = 2
-    prior_scale: float = 1.0
+    hidden_dim: int = 126
+    n_layers: int = 4
+    prior_scale: float = 0.01
     dataset_size: int = MISSING
 
 @dataclass
@@ -24,9 +24,9 @@ class FullBNNConfig:
     _target_: str = fullname(FullBNN)
     input_dim: int = 21
     output_dim: int = 6
-    hidden_dim: int = 81
-    n_layers: int = 2
-    prior_scale: float = 1.0
+    hidden_dim: int = 252
+    n_layers: int = 4
+    prior_scale: float = 0.1
     dataset_size: int = MISSING
 
 @dataclass
@@ -39,7 +39,7 @@ class GuideConfig:
 class AdamOptimizerConfig:
     _target_: str = fullname(Adam)
     optim_args: Dict[str, Any] = field(
-        default_factory=lambda: {"lr": 0.001, "betas": (0.90, 0.999)}
+        default_factory=lambda: {"lr": 0.001, "betas": (0.95, 0.999)}
     )
 
 @dataclass

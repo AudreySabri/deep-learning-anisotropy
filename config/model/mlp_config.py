@@ -12,15 +12,16 @@ class MLPConfig:
     _target_: str = fullname(MLP)
     input_dim: int = 21
     output_dim: int = 6
-    hidden_dim: int = 128
-    dropout_rate: float = 0.5
+    hidden_dim: int = 84
+    n_layers: int = 2
+    dropout_rate: float = 0.25
 
 @dataclass
 class AdamOptimizerConfig:
     _target_: str = fullname(torch.optim.Adam)
     params: Any = MISSING
-    lr: float = 0.001
-    weight_decay: float = 0.0005
+    lr: float = 0.0001
+    weight_decay: float = 0.00005
 
 
 @dataclass

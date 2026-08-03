@@ -1,0 +1,70 @@
+[2026-07-24 10:10:36,711][bnn_training_pipeline][INFO] - Instantiating datamodule <data.anisotropy_datamodule.AnisotropyDataModule>
+[2026-07-24 10:10:41,358][bnn_training_pipeline][INFO] - Instantiating model <models.bnn.network.PartialBNN>
+[2026-07-24 10:10:41,364][bnn_training_pipeline][INFO] - Model instantiated with 50778 parameters
+[2026-07-24 10:10:41,365][bnn_training_pipeline][INFO] - Guide instantiated with 0 parameters
+[2026-07-24 10:10:41,365][bnn_training_pipeline][INFO] - Loss instantiated
+[2026-07-24 10:10:41,367][bnn_training_pipeline][INFO] - Inference algorithm instantiated
+[2026-07-24 10:10:41,367][bnn_training_pipeline][INFO] - Instantiating Tensorboard logger
+[2026-07-24 10:10:41,369][bnn_training_pipeline][INFO] - Starting training!
+[2026-07-24 10:11:12,915][root][INFO] - Epoch 1/50, Loss: 2521956.9660, MAE: 0.2760
+[2026-07-24 10:11:44,755][root][INFO] - Epoch 2/50, Loss: -928232.5095, MAE: 0.1058
+[2026-07-24 10:12:16,572][root][INFO] - Epoch 3/50, Loss: -3119145.8057, MAE: 0.0742
+[2026-07-24 10:12:48,058][root][INFO] - Epoch 4/50, Loss: -4650813.4751, MAE: 0.0564
+[2026-07-24 10:13:19,912][root][INFO] - Epoch 5/50, Loss: -5832729.0498, MAE: 0.0453
+[2026-07-24 10:13:51,542][root][INFO] - Epoch 6/50, Loss: -6739319.0568, MAE: 0.0379
+[2026-07-24 10:14:23,283][root][INFO] - Epoch 7/50, Loss: -7366479.4714, MAE: 0.0332
+[2026-07-24 10:14:54,196][root][INFO] - Epoch 8/50, Loss: -8035127.1971, MAE: 0.0288
+[2026-07-24 10:15:25,667][root][INFO] - Epoch 9/50, Loss: -8460885.2468, MAE: 0.0263
+[2026-07-24 10:15:57,031][root][INFO] - Epoch 10/50, Loss: -8832409.2804, MAE: 0.0243
+[2026-07-24 10:16:29,228][root][INFO] - Epoch 11/50, Loss: -9140649.9461, MAE: 0.0229
+[2026-07-24 10:17:00,439][root][INFO] - Epoch 12/50, Loss: -9383680.2700, MAE: 0.0218
+[2026-07-24 10:17:32,339][root][INFO] - Epoch 13/50, Loss: -9703103.3219, MAE: 0.0202
+[2026-07-24 10:18:04,398][root][INFO] - Epoch 14/50, Loss: -9823726.2107, MAE: 0.0198
+[2026-07-24 10:18:36,332][root][INFO] - Epoch 15/50, Loss: -9966343.4097, MAE: 0.0192
+[2026-07-24 10:19:08,912][root][INFO] - Epoch 16/50, Loss: -10175290.3100, MAE: 0.0183
+[2026-07-24 10:19:40,418][root][INFO] - Epoch 17/50, Loss: -10352029.4665, MAE: 0.0176
+[2026-07-24 10:20:12,615][root][INFO] - Epoch 18/50, Loss: -10416377.2407, MAE: 0.0174
+[2026-07-24 10:20:44,485][root][INFO] - Epoch 19/50, Loss: -10481851.7199, MAE: 0.0172
+[2026-07-24 10:21:16,887][root][INFO] - Epoch 20/50, Loss: -10607069.6006, MAE: 0.0167
+[2026-07-24 10:21:49,092][root][INFO] - Epoch 21/50, Loss: -10681923.4349, MAE: 0.0164
+[2026-07-24 10:22:20,704][root][INFO] - Epoch 22/50, Loss: -10751528.0605, MAE: 0.0162
+[2026-07-24 10:22:51,743][root][INFO] - Epoch 23/50, Loss: -10802210.4179, MAE: 0.0161
+[2026-07-24 10:23:23,613][root][INFO] - Epoch 24/50, Loss: -10867675.3166, MAE: 0.0158
+[2026-07-24 10:23:54,963][root][INFO] - Epoch 25/50, Loss: -10916582.8126, MAE: 0.0156
+[2026-07-24 10:24:28,307][root][INFO] - Epoch 26/50, Loss: -11009014.7412, MAE: 0.0153
+[2026-07-24 10:24:59,435][root][INFO] - Epoch 27/50, Loss: -10995543.1253, MAE: 0.0154
+[2026-07-24 10:25:30,917][root][INFO] - Epoch 28/50, Loss: -11064816.3123, MAE: 0.0151
+[2026-07-24 10:26:02,753][root][INFO] - Epoch 29/50, Loss: -11176848.7609, MAE: 0.0148
+[2026-07-24 10:26:34,514][root][INFO] - Epoch 30/50, Loss: -11168835.4098, MAE: 0.0148
+[2026-07-24 10:27:05,498][root][INFO] - Epoch 31/50, Loss: -11234867.4221, MAE: 0.0146
+[2026-07-24 10:27:36,574][root][INFO] - Epoch 32/50, Loss: -11270268.8613, MAE: 0.0145
+[2026-07-24 10:28:08,609][root][INFO] - Epoch 33/50, Loss: -11271089.6818, MAE: 0.0145
+[2026-07-24 10:28:40,760][root][INFO] - Epoch 34/50, Loss: -11294991.1135, MAE: 0.0143
+[2026-07-24 10:29:19,417][root][INFO] - Epoch 35/50, Loss: -11335732.0307, MAE: 0.0143
+[2026-07-24 10:29:50,916][root][INFO] - Epoch 36/50, Loss: -11383924.6549, MAE: 0.0141
+[2026-07-24 10:30:22,974][root][INFO] - Epoch 37/50, Loss: -11388938.8645, MAE: 0.0141
+[2026-07-24 10:30:54,699][root][INFO] - Epoch 38/50, Loss: -11409779.5654, MAE: 0.0140
+[2026-07-24 10:31:26,606][root][INFO] - Epoch 39/50, Loss: -11456903.5798, MAE: 0.0139
+[2026-07-24 10:31:59,249][root][INFO] - Epoch 40/50, Loss: -11526160.4207, MAE: 0.0136
+[2026-07-24 10:32:30,622][root][INFO] - Epoch 41/50, Loss: -11564370.7121, MAE: 0.0135
+[2026-07-24 10:33:02,574][root][INFO] - Epoch 42/50, Loss: -11513589.6234, MAE: 0.0137
+[2026-07-24 10:33:34,632][root][INFO] - Epoch 43/50, Loss: -11561354.5544, MAE: 0.0135
+[2026-07-24 10:34:06,247][root][INFO] - Epoch 44/50, Loss: -11607432.6674, MAE: 0.0134
+[2026-07-24 10:34:38,957][root][INFO] - Epoch 45/50, Loss: -11585317.9616, MAE: 0.0135
+[2026-07-24 10:35:11,723][root][INFO] - Epoch 46/50, Loss: -11625598.8092, MAE: 0.0133
+[2026-07-24 10:35:43,407][root][INFO] - Epoch 47/50, Loss: -11653573.0559, MAE: 0.0133
+[2026-07-24 10:36:15,509][root][INFO] - Epoch 48/50, Loss: -11692035.8678, MAE: 0.0131
+[2026-07-24 10:36:47,260][root][INFO] - Epoch 49/50, Loss: -11685018.8727, MAE: 0.0131
+[2026-07-24 10:37:19,511][root][INFO] - Epoch 50/50, Loss: -11723926.5695, MAE: 0.0130
+[2026-07-24 10:37:19,511][root][INFO] - Training completed. Best Loss: -11723926.5695, Best MAE: 0.0130
+[2026-07-24 10:37:19,512][bnn_training_pipeline][INFO] - Training completed
+[2026-07-24 10:37:19,512][bnn_training_pipeline][INFO] - Saving model and guide
+[2026-07-24 10:37:19,531][bnn_training_pipeline][INFO] - Starting prediction on test set!
+[2026-07-24 10:38:16,610][root][INFO] - Prediction completed. Mean MAE per sample=0.023
+[2026-07-24 10:38:16,625][bnn_training_pipeline][INFO] - Prediction completed
+[2026-07-24 10:38:16,626][bnn_training_pipeline][INFO] - Prediction time: 57.09 seconds
+[2026-07-24 10:38:16,626][bnn_training_pipeline][INFO] - Memory usage: 33.25 MB
+[2026-07-24 10:38:16,626][bnn_training_pipeline][INFO] - Saving predictions to disk
+[2026-07-24 10:38:23,034][root][INFO] - Saved prediction plots to test_results
+[2026-07-24 10:38:26,379][submitit][INFO] - Job completed successfully
+[2026-07-24 10:38:26,383][submitit][INFO] - Exiting after successful completion

@@ -38,11 +38,11 @@ class PipelineConfig:
     hydra: Any = field(default_factory=lambda: HydraConf())
     seed: int = 42
 
-    train: bool = True
+    train: bool = False
     save_dir: str = "./outputs"
     log_dir: str = "./logs"
 
-    test: bool = True
+    test: bool = False
     load_testing_model: bool = False
     test_model_path: Optional[str] = None
     test_results_dir: str = "./test_results"
@@ -51,9 +51,9 @@ class PipelineConfig:
     test_results_plot: Optional[str] = "test_results.png"
 
     predict: bool = True
-    prediction_dataset_path : str = "/home/sabria/scratch_sabria/vpsc-hill/data/polynesia_db.csv"
-    load_predictive_model: bool = False
-    pred_model_path: Optional[str] = None
+    prediction_dataset_path : Optional[str] = "/home/sabria/scratch_sabria/deep-learning-anisotropy/datasets/polynesia_db.csv"
+    load_predictive_model: bool = True
+    pred_model_path: Optional[str] = '/home/sabria/scratch_sabria/deep-learning-anisotropy/trained_models/trained_mlp_hill/outputs/best.pth.tar'
     predictions_dir: str = "./predictions"
     predictions_file: str = "predictions.csv"
     plot_pred: bool = True
