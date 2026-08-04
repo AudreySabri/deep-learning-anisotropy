@@ -16,7 +16,7 @@ class DataConfig:
     val_split: float = 0.0
     test_split: float = 0.2
     transform: Optional[str] = 'standard'
-    batch_size: int = 512
+    batch_size: int = 128
     num_workers: int = 1
     cuda: bool = False
     seed: int = 42

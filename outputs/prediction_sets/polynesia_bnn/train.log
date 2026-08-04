@@ -1,0 +1,14 @@
+[2026-08-04 12:35:35,551][bnn_training_pipeline][INFO] - Instantiating datamodule <data.anisotropy_datamodule.AnisotropyDataModule>
+[2026-08-04 12:35:40,988][bnn_training_pipeline][INFO] - Instantiating model <models.bnn.network.PartialBNN>
+[2026-08-04 12:35:42,193][bnn_training_pipeline][INFO] - Model instantiated with 50778 parameters
+[2026-08-04 12:35:42,194][bnn_training_pipeline][INFO] - Guide instantiated with 0 parameters
+[2026-08-04 12:35:42,194][bnn_training_pipeline][INFO] - Loss instantiated
+[2026-08-04 12:35:42,197][bnn_training_pipeline][INFO] - Inference algorithm instantiated
+[2026-08-04 12:35:42,197][bnn_training_pipeline][INFO] - Instantiating Tensorboard logger
+[2026-08-04 12:35:42,200][bnn_training_pipeline][INFO] - Starting prediction
+[2026-08-04 12:35:42,206][bnn_training_pipeline][INFO] - Loading model and guide from disk
+[2026-08-04 12:35:44,739][root][INFO] - Prediction completed. Mean MAE per sample=0.094
+[2026-08-04 12:35:44,742][bnn_training_pipeline][INFO] - Prediction time: 2.54 seconds
+[2026-08-04 12:35:44,742][bnn_training_pipeline][INFO] - Memory usage: 17.09 MB
+[2026-08-04 12:35:44,742][bnn_training_pipeline][INFO] - Saving predictions to disk
+[2026-08-04 12:35:45,851][root][INFO] - Saved prediction plots to predictions

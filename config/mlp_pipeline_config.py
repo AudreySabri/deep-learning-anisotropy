@@ -51,7 +51,7 @@ class PipelineConfig:
     test_results_plot: Optional[str] = "test_results.png"
 
     predict: bool = True
-    prediction_dataset_path : Optional[str] = "/home/sabria/scratch_sabria/deep-learning-anisotropy/datasets/polynesia_db.csv"
+    prediction_dataset_path : Optional[str] = "/home/sabria/scratch_sabria/deep-learning-anisotropy/datasets/carpathes_db.csv"
     load_predictive_model: bool = True
     pred_model_path: Optional[str] = '/home/sabria/scratch_sabria/deep-learning-anisotropy/trained_models/trained_mlp_hill/outputs/best.pth.tar'
     predictions_dir: str = "./predictions"

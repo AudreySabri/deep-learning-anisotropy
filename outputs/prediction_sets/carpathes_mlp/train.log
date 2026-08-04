@@ -1,0 +1,14 @@
+[2026-08-04 13:53:21,863][mlp_training_pipeline][INFO] - Instantiating datamodule <data.anisotropy_datamodule.AnisotropyDataModule>
+[2026-08-04 13:53:26,795][mlp_training_pipeline][INFO] - Instantiating model <models.mlp.network.MLP>
+[2026-08-04 13:53:26,799][mlp_training_pipeline][INFO] - Model instantiated with 9498 parameters
+[2026-08-04 13:53:26,800][mlp_training_pipeline][INFO] - Loss and tracking metric instantiated
+[2026-08-04 13:53:26,800][mlp_training_pipeline][INFO] - Optimizer instantiated
+[2026-08-04 13:53:26,800][mlp_training_pipeline][INFO] - Instantiating Tensorboard logger
+[2026-08-04 13:53:26,804][mlp_training_pipeline][INFO] - Starting prediction on specified dataset!
+[2026-08-04 13:53:26,809][mlp_training_pipeline][INFO] - Loading model from disk
+[2026-08-04 13:53:26,878][root][INFO] - Prediction completed. Average Score: 0.1561
+[2026-08-04 13:53:26,881][mlp_training_pipeline][INFO] - Prediction time: 0.08 seconds
+[2026-08-04 13:53:26,881][mlp_training_pipeline][INFO] - Memory usage: 6.00 MB
+[2026-08-04 13:53:26,881][mlp_training_pipeline][INFO] - Saving predictions to disk
+[2026-08-04 13:53:27,352][root][INFO] - Saved prediction plots to predictions
+[2026-08-04 13:53:27,355][mlp_training_pipeline][INFO] - Finalizing!

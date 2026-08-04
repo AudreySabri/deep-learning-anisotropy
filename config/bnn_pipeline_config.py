@@ -54,15 +54,15 @@ class PipelineConfig:
     test_results_plot: Optional[str] = "test_results.png"
 
     predict: bool = True
-    prediction_dataset_path : Optional[str] = "/home/sabria/scratch_sabria/deep-learning-anisotropy/datasets/polynesia_db.csv"
+    prediction_dataset_path : Optional[str] = "/home/sabria/scratch_sabria/deep-learning-anisotropy/datasets/carpathes_db.csv"
     load_predictive_model: Optional[bool] = True
     pred_model_path: Optional[str] = "/home/sabria/scratch_sabria/deep-learning-anisotropy/trained_models/trained_bnn_hill/outputs/trained_bnn_model.pt"
     pred_param_store_path: Optional[str] = "/home/sabria/scratch_sabria/deep-learning-anisotropy/trained_models/trained_bnn_hill/outputs/bnn_param_store.pt"
     pred_num_samples: int = 20
-    predictions_file: str = "polynesia_predictions.csv"
+    predictions_file: str = "carpathes_predictions.csv"
     predictions_dir: str = "./predictions"
     plot_pred: bool = True
-    predictions_plot: Optional[str] = "polynesia_predictions.png"
+    predictions_plot: Optional[str] = "carpathes_predictions.png"
 
     datamodule: Any = MISSING
     trainer: Any = MISSING
