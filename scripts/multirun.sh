@@ -1,9 +1,9 @@
 #!/bin/bash  
-#SBATCH --job-name=_BNN_Q_HPO
+#SBATCH --job-name=_MLP_HILL_HPO
 #SBATCH --partition=cpu-dedicated
 #SBATCH --qos=dedicated
-#SBATCH --output=_bnn_hpo_results_%j.out
-#SBATCH --error=_bnn_hpo_error_%j.err
+#SBATCH --output=_mlp_hpo_results_%j.out
+#SBATCH --error=_mlp_hpo_error_%j.err
 #SBATCH --time=12:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
@@ -13,7 +13,7 @@
 module purge
 
 # Hyperparameter config:
-HYPERPARAMETERS="datamodule.batch_size=choice(128,256,512,1024)  model.hidden_dim=choice(42,84,126,252) model.n_layers=choice(2,4,8) model.prior_scale=choice(0.01,0.1,1.0,10.0)"
+HYPERPARAMETERS="datamodule.batch_size=choice(128,256,512,1024)  model.hidden_dim=choice(42,84,126,252) model.n_layers=choice(2,3,4) model.dropout_rate=choice(0.2,0.3,0.4,0.5)"
 
 source ~/miniconda3/etc/profile.d/conda.sh
 conda activate vpsc-hill-ml

@@ -10,9 +10,9 @@ test_results_file: test_results.csv
 plot_test_results: true
 test_results_plot: test_results.png
 predict: false
-prediction_dataset_path: null
+prediction_dataset_path: /home/sabria/scratch_sabria/deep-learning-anisotropy/datasets/carpathes_db.csv
 load_predictive_model: false
-pred_model_path: null
+pred_model_path: /home/sabria/scratch_sabria/deep-learning-anisotropy/trained_models/trained_mlp_hill/outputs/best.pth.tar
 predictions_dir: ./predictions
 predictions_file: predictions.csv
 plot_pred: true
@@ -23,11 +23,11 @@ datamodule:
   file_path: aug_db.csv
   input_pattern: ^c\d+_out$
   target_pattern: ^q\d+$
-  train_split: 0.6
+  train_split: 0.75
   val_split: 0.2
-  test_split: 0.2
+  test_split: 0.05
   transform: standard
-  batch_size: 128
+  batch_size: 512
   num_workers: 1
   cuda: false
   seed: 42
@@ -35,15 +35,15 @@ model:
   _target_: models.mlp.network.MLP
   input_dim: 21
   output_dim: 4
-  hidden_dim: 84
+  hidden_dim: 252
   n_layers: 4
-  dropout_rate: 0.25
+  dropout_rate: 0.2
 loss:
   _target_: torch.nn.modules.loss.MSELoss
 metric_fn:
   _target_: torch.nn.modules.loss.L1Loss
 optimizer:
-  _target_: torch.optim.adam.Adam
+  _target_: torch.optim.adamw.AdamW
   params: ???
   lr: 0.0001
   weight_decay: 5.0e-05

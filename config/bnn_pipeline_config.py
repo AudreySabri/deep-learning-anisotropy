@@ -48,8 +48,8 @@ class PipelineConfig:
     test_model_path: Optional[str] = None
     test_param_store_path: Optional[str] = None
     test_num_samples: int = 20
-    test_results_file: str = "test_results.csv"
     test_results_dir: str = "./test_results"
+    test_results_file: str = "test_results.csv"
     plot_test_results: bool = True
     test_results_plot: Optional[str] = "test_results.png"
 
@@ -59,17 +59,17 @@ class PipelineConfig:
     pred_model_path: Optional[str] = "/home/sabria/scratch_sabria/deep-learning-anisotropy/trained_models/trained_bnn_hill/outputs/trained_bnn_model.pt"
     pred_param_store_path: Optional[str] = "/home/sabria/scratch_sabria/deep-learning-anisotropy/trained_models/trained_bnn_hill/outputs/bnn_param_store.pt"
     pred_num_samples: int = 20
-    predictions_file: str = "carpathes_predictions.csv"
-    predictions_dir: str = "./predictions"
+    predictions_dir: str = "./predictions" # output directory for predictions
+    predictions_file: str = "carpathes_predictions.csv" #output file for predictions
     plot_pred: bool = True
-    predictions_plot: Optional[str] = "carpathes_predictions.png"
+    predictions_plot: Optional[str] = "carpathes_predictions.png" #output file for predictions plot
 
     datamodule: Any = MISSING
-    trainer: Any = MISSING
     model: Any = MISSING
     guide: Any = MISSING
     optimizer: Any = MISSING
     inference: Any = MISSING
+    trainer: Any = MISSING
     predictor: Any = MISSING
 
     launcher: Any = field(default_factory=SlurmConfig)
@@ -77,12 +77,12 @@ class PipelineConfig:
 def register_bnn_configs():
     cs = ConfigStore()
     cs.store(group="datamodule", name="anisotropy", node=DataConfig)
-    cs.store(group="trainer", name="cpu", node=SVITrainerConfig)
     cs.store(group="model", name="partial_bnn", node=PartialBNNConfig)
    # cs.store(group="model", name="full", node=FullBNNConfig)
     cs.store(group="guide", name="low_rank", node=GuideConfig)
     cs.store(group="optimizer", name="adam", node=AdamOptimizerConfig)
     cs.store(group="inference", name="svi", node=SVIConfig)
+    cs.store(group="trainer", name="cpu", node=SVITrainerConfig)
     cs.store(group="predictor", name="bnn_predictor", node=BNNPredictorConfig)
     cs.store(group="hydra/launcher", name="submitit_slurm_local", node=SlurmConfig)
     cs.store(name="bnn", node=PipelineConfig)

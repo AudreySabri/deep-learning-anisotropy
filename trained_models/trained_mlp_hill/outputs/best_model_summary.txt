@@ -3,15 +3,15 @@ Layer (type:depth-idx)                   Param #
 =================================================================
 MLP                                      --
 ├─Sequential: 1-1                        --
-│    └─Linear: 2-1                       1,848
+│    └─Linear: 2-1                       5,544
 │    └─ReLU: 2-2                         --
 │    └─Dropout: 2-3                      --
-│    └─Linear: 2-4                       7,140
+│    └─Linear: 2-4                       63,756
 │    └─ReLU: 2-5                         --
 │    └─Dropout: 2-6                      --
-│    └─Linear: 2-7                       510
+│    └─Linear: 2-7                       1,518
 =================================================================
-Total params: 9,498
-Trainable params: 9,498
+Total params: 70,818
+Trainable params: 70,818
 Non-trainable params: 0
 =================================================================

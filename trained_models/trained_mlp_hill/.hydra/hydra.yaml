@@ -137,16 +137,16 @@ hydra:
     hydra:
     - hydra.mode=MULTIRUN
     task:
-    - datamodule.batch_size=128
-    - model.hidden_dim=84
+    - datamodule.batch_size=1024
+    - model.hidden_dim=252
     - model.n_layers=2
-    - model.dropout_rate=0.25
+    - model.dropout_rate=0.2
   job:
     name: train
     chdir: null
-    override_dirname: datamodule.batch_size=128,model.dropout_rate=0.25,model.hidden_dim=84,model.n_layers=2
-    id: '8770587_12'
-    num: 12
+    override_dirname: datamodule.batch_size=1024,model.dropout_rate=0.2,model.hidden_dim=252,model.n_layers=2
+    id: '8996668_180'
+    num: 180
     config_name: mlp
     env_set: {}
     env_copy: []
@@ -166,7 +166,7 @@ hydra:
     - path: ''
       schema: structured
       provider: schema
-    output_dir: /scratch/users/sabria/deep-learning-anisotropy/multirun/2026-07-28/10-24-44/12
+    output_dir: /scratch/users/sabria/deep-learning-anisotropy/multirun/2026-08-05/16-43-54/180
     choices:
       predictor: mlp_predictor
       trainer: mlp_trainer

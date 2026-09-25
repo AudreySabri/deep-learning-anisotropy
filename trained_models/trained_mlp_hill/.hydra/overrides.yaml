@@ -1,4 +1,4 @@
-- datamodule.batch_size=128
-- model.hidden_dim=84
+- datamodule.batch_size=1024
+- model.hidden_dim=252
 - model.n_layers=2
-- model.dropout_rate=0.25
+- model.dropout_rate=0.2

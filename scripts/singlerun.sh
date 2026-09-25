@@ -1,9 +1,9 @@
 #!/bin/bash  
-#SBATCH --job-name=_BNN_PRED_
+#SBATCH --job-name=_MLP_PRED_
 #SBATCH --partition=cpu-dedicated
 #SBATCH --qos=dedicated
-#SBATCH --output=_bnn_pred_results_%j.out
-#SBATCH --error=_bnn_pred_error_%j.err
+#SBATCH --output=_mlp_pred_results_%j.out
+#SBATCH --error=_mlp_pred_error_%j.err
 #SBATCH --time=12:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks=1

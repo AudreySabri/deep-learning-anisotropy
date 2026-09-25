@@ -1,6 +1,6 @@
 # Deep Learning for Physical Property Predictions of CPO Polycrystalline Textures
 
-BNN and MLP regressors trained to predict polycrystalline texture viscous anisotropy, as parameterized by the Hill orthotropic yield criterion. These regressors may also be used to predict texture rotations. To use our model, textures must be represented by their 21 independent elasticity tensor components. 
+BNN and MLP regressors trained to predict polycrystalline texture viscous anisotropy, as parameterized by the Hill orthotropic yield criterion. These regressors may also be used to predict  CPO reference frame orientations. To use our model, textures must be represented by their 21 independent elastic constants. 
 
 ## Installing
 
@@ -16,7 +16,7 @@ pip install -r requirements.txt
 
 To skip ahead and simply run our trained model on a prediction dataset:
 
-1. Specify the model (**mlp** or **bnn**) and the path to the training database in <code>.env</code>.
+1. Specify the model (**mlp** or **bnn**) in <code>.env</code>.
 
 2. Go to the respective <code>/config/{mlp or bnn}_pipeline_config.py</code> file
 
@@ -51,13 +51,13 @@ Depending on your available resources, it is advised that you tune the Slurm con
 
 ## Description
 
-Our BNN and MLP regressors were trained on polycrystalline olivine textures generated with the [Viscoplastic Self-consistent (VPSC)](https://doi.org/10.11578/dc.20231103.5) model. To generate our training database, we simulated 300 different deformation paths of 20 Eeq = 0.1 steps, starting from a texture of 500 randomly oriented crystals. 
+Our BNN and MLP regressors were trained on polycrystalline olivine textures generated with the [Viscoplastic Self-consistent (VPSC)](https://doi.org/10.11578/dc.20231103.5) code. To generate our training database, we simulated 300 different deformation paths of 20 Eeq = 0.1 steps, starting from a texture of 500 randomly oriented crystals. 
 
 To be exact, our deformation paths consisted of 150 random combinations of pure sheer + axial extension veloctiy gradients, and 150 random combinations of pure sheer + axial compression veloctiy gradients. These textures were then augmented by 150 randomly generated rotations sampled from the orthorhombic fundamental zone.
 
-From our modified version of the VPSC code, we obtained the textures' stress and strain rates to compute the Hill yield surface coefficients in order to describe their anisotropy (see [Signorelli, et al.](https://doi.org/10.46298/jtcam.6737)). We also obtained the textures' Cijkl elasticity tensor components to represent them, of which we only need 21 components thanks to their symmetry. 
+From our modified version of the VPSC code, we obtained the textures' stress and strain rates to compute the Hill yield surface coefficients in order to describe their anisotropy (see [Signorelli, et al.](https://doi.org/10.46298/jtcam.6737)). We also obtained the textures' Cijkl elastic compliance tensor components to represent them, of which we only need 21 components thanks to their symmetry. 
 
-Through this texture representation, we were able to predict both the Hill coefficients and the texture rotations well enough and in adequate time so that the results of our model may further be used in a 3D thermo-mechanical finite-element code developed to model large-scale geodynamical flows.
+Through this texture representation, we were able to predict both the Hill coefficients and the CPO reference frame orientation well enough and in adequate time so that the results of our model may further be used in a 3D thermo-mechanical finite-element code developed to model large-scale geodynamical flows (see [Hassani, et al.](https://doi.org/10.1029/97JB01354)).
 
 Our repository is built with <code>Hydra</code> to simplify executions over different configurations (hyperparameters, datasets, etc.) with a single line of code. The desired configuration can be specified by updating the <code>.py</code> files within the <code>config</code> folder, or by running the appropreate command, as you will see in the **Execution** section. 
 
@@ -83,6 +83,10 @@ The repo structure is as follows:
     │   ├── anisotropy_datamodule.py
     │   ├── csv_dataset.py
     │   └── dataloaders.py
+    ├── datasets    # Datasets used in our work
+    │   ├── aug_db.csv  # Our VPSC simulated dataset
+    │   ├── carpathes_db.csv    # Natural texture dataset extracted from Falus, et al. 
+    │   └── polynesia_db.csv    # Natural texture dataset extracted from Tommasi, et al.
     ├── models      # Networks used in this work and their components
     │   ├── bnn
     │   │   ├── bnn_components.py
@@ -92,24 +96,38 @@ The repo structure is as follows:
     │   ├── mlp
     │   │   ├── mlp_trainer.py
     │   │   └── network.py    
+    ├── scripts     # Submission scripts
+    │   ├── multirun.sh
+    │   └── singlerun.sh
+    ├── trained_models      # Trained neural networks used in this work and their test results
+    │   ├── trained_bnn_hill
+    │   ├── trained_bnn_quat
+    │   ├── trained_mlp_hill
+    │   └── trained_mlp_quat
     ├── utils
     │   ├── __init__.py
     │   └── plotting.py
-    ├── scripts     # Submission scripts
-    │   └── multirun.sh
+    ├── .env        # Please specify model config (bnn or mlp) here
     ├── requirements.txt
-    ├── .env        # Please specify model config (bnn or mlp) and directory to your training database here
     ├── bnn_training_pipeline.py
     ├── mlp_training_pipeline.py
     └── train.py        # Main file to execute
 
 ```
 
-To reproduce our results (...) 
+Training details in this work: 
+
+     * To predict the six Hill coefficients with a PBNN, the best model was trained over 50 epochs with a batch size of $b=512$ data points, $l=4$ hidden layers with dimension $d=126$, and a prior scale of $p=0.01$ on the model's learnable parameter distributions. We reach a best MAE of 0.013 with a prediction time in the order of a tenth of a millisecond per data point. This translates to a MAE ≤ 0.002 for F,G,H and a MAE ≤ 0.064 for L,M,N.
+
+     * To predict the same target with a MLP, the best model was trained over 200 epochs with a batch size of $b=1024$ data points, $l=2$ hidden layers with dimension $d=252$, and a dropout rate of $r=0.2$ on the model's dropout layers. We reach a best MAE of 0.064 with a prediction time in the order of microseconds per data point. This translates to a MAE ≤ 0.011 for F,G,H and a MAE ≤ 0.43 for L,M,N.
+
+     * To predict the four quaternion components with a PBNN, the best model was trained over 50 epochs with a batch size of 256 data points, $l=4$ hidden layers with dimension $d=84$, and a prior scale of $p=0.01$  on the model's learnable parameter distributions. We reach a best MAE of 0.013 with a prediction time in the order of a tenth of a millisecond per data point. This translates to a median error of 1.03° between the predicted and true angles of the CPO reference frame. 
+
+     * To predict the same target with a MLP, the best model was trained over 200 epochs with a batch size of $b=512$ data points, $l=4$ hidden layers with dimension $d=252$, and a dropout rate of $r=0.2$ on the model's dropout layers. We reach a best MAE of 0.014 with a prediction time in the order of microseconds per data point. This translates to a median error of 1.19° between the predicted and true angles of the CPO reference frame.
 
 ## Execution
 
-First, you must specify the model (**mlp** or **bnn**) and the path to your training database in <code>.env</code>.
+First, you must specify the model (**mlp** or **bnn**) in <code>.env</code>.
 
 In case you want to train a model from scratch, you must specify your desired configurations in the config folder described above. Depending on the type of network that you want to train, in the respective <code>/config/{mlp or bnn}_pipeline_config.py</code> file, make sure to set 
 
@@ -174,7 +192,7 @@ By Audrey Sabri for Géosciences Montpellier under the supervision of [Andrea To
 
 ## License
 
-This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
+This work was supported by the European Research Council (ERC) under the European Union Horizon 2020 Research and Innovation program [grant agreement No 882450 – ERC RhEoVOLUTION].
 
 ## Acknowledgments
 

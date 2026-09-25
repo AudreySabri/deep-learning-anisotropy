@@ -14,6 +14,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 import utils
 from utils.plotting import plot_mlp_predictions
+from models.mlp.network import kaiming_init
 
 
 log = utils.get_logger(__name__)
@@ -44,6 +45,7 @@ def train_mlp(config: DictConfig) -> Optional[float]:
     model = hydra.utils.instantiate(
         config.model,
     )
+    kaiming_init(model)
     log.info(f"Model instantiated with {sum(p.numel() for p in model.parameters())} parameters")
 
     # Init loss
