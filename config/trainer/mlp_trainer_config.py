@@ -8,6 +8,7 @@ from utils import fullname
 
 @dataclass
 class MLPTrainerConfig:
+    """Configuration for MLP trainer."""
     _target_: str = fullname(train_and_evaluate)
     model: Any = MISSING
     train_dl: Any = MISSING
@@ -23,6 +24,7 @@ class MLPTrainerConfig:
 
 @dataclass
 class PredictorConfig:
+    """Configuration for MLP predictor."""
     _target_: str = fullname(predict)
     model: Any = MISSING
     pred_dl: Any = MISSING

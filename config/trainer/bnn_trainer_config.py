@@ -9,6 +9,7 @@ from models.bnn.bnn_predict import BNNPredictor
 
 @dataclass
 class SVITrainerConfig:
+    """Configuration for Stochastic Variational Inference (SVI) trainer."""
     _target_: str = fullname(SVITrainer)
     svi : Any = MISSING
     dataloader : Any = MISSING
@@ -18,6 +19,7 @@ class SVITrainerConfig:
 
 @dataclass
 class BNNPredictorConfig:
+    """Configuration for Bayesian neural network predictor."""
     _target_: str = fullname(BNNPredictor)
     predictive : Any = MISSING
     dataloader : Any = MISSING

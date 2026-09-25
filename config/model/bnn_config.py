@@ -11,6 +11,7 @@ from utils import fullname
 
 @dataclass
 class PartialBNNConfig:
+    """Configuration for partial Bayesian neural networks."""
     _target_: str = fullname(PartialBNN)
     input_dim: int = 21
     output_dim: int = 6
@@ -21,6 +22,7 @@ class PartialBNNConfig:
 
 @dataclass
 class FullBNNConfig:
+    """Configuration for fully Bayesian neural networks."""
     _target_: str = fullname(FullBNN)
     input_dim: int = 21
     output_dim: int = 6
@@ -31,12 +33,14 @@ class FullBNNConfig:
 
 @dataclass
 class GuideConfig:
+    """Configuration for Bayesian neural network guides."""
     _target_: str = fullname(AutoLowRankMultivariateNormal)
     model: Any = MISSING
     rank: int = 100
 
 @dataclass
 class AdamOptimizerConfig:
+    """Configuration for Adam optimizer."""
     _target_: str = fullname(Adam)
     optim_args: Dict[str, Any] = field(
         default_factory=lambda: {"lr": 0.001, "betas": (0.95, 0.999)}
@@ -44,6 +48,7 @@ class AdamOptimizerConfig:
 
 @dataclass
 class SVIConfig:
+    """Configuration for Stochastic Variational Inference (SVI)."""
     _target_: str = fullname(SVI)
     model: Any = MISSING
     guide: Any = MISSING

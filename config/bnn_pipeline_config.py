@@ -75,6 +75,12 @@ class PipelineConfig:
     launcher: Any = field(default_factory=SlurmConfig)
 
 def register_bnn_configs():
+    """Register BNN-related dataclasses with Hydra `ConfigStore`.
+
+    This function binds the dataclass config nodes used by the BNN pipeline
+    (datamodule, model, guide, optimizer, inference, trainer, predictor,
+    launcher) so they are discoverable by Hydra at runtime.
+    """
     cs = ConfigStore()
     cs.store(group="datamodule", name="anisotropy", node=DataConfig)
     cs.store(group="model", name="partial_bnn", node=PartialBNNConfig)

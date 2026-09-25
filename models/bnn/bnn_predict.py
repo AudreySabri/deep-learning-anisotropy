@@ -8,12 +8,19 @@ from sklearn.metrics import mean_absolute_error
 log = logging.getLogger(__name__)
 
 def BNNPredictor(predictive, dataloader, device, scaler=None):
-    """
-    Predict using a Pyro model and guide.
+    """Run prediction with a Pyro `Predictive` object over a dataloader.
+
+    Args:
+        predictive (Callable): A Pyro `Predictive` that returns
+            posterior predictive samples when called as `predictive(x)`.
+        dataloader (Iterable): PyTorch dataloader yielding (inputs, targets).
+        device (str or torch.device): Device to run inference on.
+        scaler (optional): Optional scaler with `inverse_transform` used to
+            convert scaled outputs back to original units.
 
     Returns:
-        dict: Dictionary containing the predictions and their statistics.
-        pd.DataFrame: DataFrame containing the predictions and their statistics.
+        tuple: `(pred_dict, pred_df)` where `pred_dict` maps metric names to
+            numpy arrays and `pred_df` is a pandas DataFrame of the same data.
     """
     pred_summary = {}
 
@@ -43,6 +50,19 @@ def BNNPredictor(predictive, dataloader, device, scaler=None):
     
 
 def summary(samples, ground_truth = None):
+    """Compute per-site summary statistics from posterior samples.
+
+    Calculates mean, standard deviation, and empirical 5/95 percentiles for
+    each sampled site. When `ground_truth` is provided for the observation
+    site (`"obs"`), also compute MAE and attach the ground truth array.
+
+    Args:
+        samples (dict): Mapping from site name to tensor of samples.
+        ground_truth (Tensor, optional): True targets for MAE computation.
+
+    Returns:
+        dict: Nested mapping site -> statistic name -> tensor/value.
+    """
     site_stats = {}
     for k, v in samples.items():
         site_stats[k] = {
@@ -59,11 +79,17 @@ def summary(samples, ground_truth = None):
     return site_stats
 
 def results_to_dict(prediction_summary):
-    """
-    Convert prediction summary to a dictionary.
+    """Flatten the prediction summary for saving or plotting.
+
+    Converts the nested summary for the observation site into a dict mapping
+    column names (e.g. 'mean_0', '5%_1', 'ground_truth_2') to 1D numpy arrays.
+
+    Args:
+        prediction_summary (dict): Output from `summary()` for multiple batches
+            concatenated per-batch into lists.
 
     Returns:
-        dict: Dictionary containing the predictions and their statistics.
+        dict: Flattened mapping of metric/feature to numpy array.
     """
     y = prediction_summary["obs"]
     results_dict = {}

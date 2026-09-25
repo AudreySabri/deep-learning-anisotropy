@@ -8,7 +8,21 @@ from pyro.nn import PyroModule, PyroSample
 from models.bnn.bnn_components import FeatureExtractor, BayesianLinear
 
 class PartialBNN(PyroModule):
+    """Partial Bayesian neural network that places priors on final layer.
 
+    This model uses a deterministic feature extractor followed by a
+    `BayesianLinear` output layer. Observations are modeled with a
+    LowRankMultivariateNormal likelihood whose parameters are sampled inside
+    the forward pass so that SVI can learn posterior distributions.
+
+    Args:
+        input_dim (int): Input feature dimension.
+        output_dim (int): Dimension of model outputs.
+        hidden_dim (int): Hidden layer dimension for the feature extractor.
+        n_layers (int): Number of hidden layers in the feature extractor.
+        prior_scale (float): Scale (std) of Normal priors on weights.
+        dataset_size (int): Total dataset size (used for plates/subsampling).
+    """
     def __init__(self, input_dim, output_dim, hidden_dim, n_layers, prior_scale, dataset_size):
         super().__init__()
 
@@ -18,6 +32,16 @@ class PartialBNN(PyroModule):
         self.out = BayesianLinear(hidden_dim, output_dim, prior_scale)
 
     def forward(self, x, y=None):
+        """Forward pass that samples likelihood parameters and returns predictive mean.
+
+        Args:
+            x (Tensor): Input tensor of shape (batch, input_dim).
+            y (Tensor, optional): Optional target values for conditioning the
+                observed site during training.
+
+        Returns:
+            Tensor: Predictive mean `mu` of shape (batch, output_dim).
+        """
         h = self.features(x)
         mu = self.out(h)
 
@@ -31,6 +55,20 @@ class PartialBNN(PyroModule):
         return mu
 
 class FullBNN(PyroModule):
+    """Fully Bayesian neural network placing priors on all linear layers.
+
+    Builds an MLP where each linear layer's weights and biases are Pyro samples
+    with Normal priors. Observations are modeled with a
+    LowRankMultivariateNormal likelihood as in `PartialBNN`.
+
+    Args:
+        input_dim (int): Input feature dimension.
+        output_dim (int): Output dimensionality.
+        hidden_dim (int): Hidden layer width.
+        n_layers (int): Number of hidden layers.
+        prior_scale (float): Scale (std) for Normal priors.
+        dataset_size (int): Dataset size for the Pyro plate.
+    """
     def __init__(self, input_dim, output_dim, hidden_dim, n_layers, prior_scale, dataset_size):
         super().__init__()
 
@@ -49,6 +87,15 @@ class FullBNN(PyroModule):
                 [dims[layer_idx +1]]).to_event(1))
             
     def forward(self, x, y=None):
+        """Forward pass through the fully Bayesian MLP.
+
+        Args:
+            x (Tensor): Input tensor of shape (batch, input_dim).
+            y (Tensor, optional): Optional targets to condition the observed site.
+
+        Returns:
+            Tensor: Predictive mean of shape (batch, output_dim).
+        """
         x = self.activation(self.layers[0](x))
         for layer in self.layers[1:-1]:
              x = self.activation(layer(x))

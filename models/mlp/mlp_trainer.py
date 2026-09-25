@@ -7,6 +7,17 @@ from torchinfo import summary
 from utils import save_checkpoint
 
 def predict(model, pred_dl, metric_fn, cuda=False):
+    """Run model prediction over `pred_dl` and compute a tracking metric.
+
+    Args:
+        model (nn.Module): Trained PyTorch model used for inference.
+        pred_dl (DataLoader): Dataloader yielding (input, target) pairs.
+        metric_fn (callable): Function taking (outputs, targets) and returning a scalar.
+        cuda (bool): If True, move batches to CUDA device.
+
+    Returns:
+        tuple: `(predictions, ground_truth)` where both are concatenated numpy arrays.
+    """
     model.eval()
 
     predictions = []
@@ -30,6 +41,23 @@ def predict(model, pred_dl, metric_fn, cuda=False):
     return np.concatenate(predictions, axis=0), np.concatenate(ground_truth, axis=0)
 
 def train_and_evaluate(model, train_dl, val_dl, optimizer, loss_fn, metric_fn, num_epochs, save_dir=None, writer=None, cuda=False):
+    """Train `model` using `train_dl` and evaluate on `val_dl` each epoch.
+
+    Saves best and last model summaries to `save_dir` when provided and logs
+    training/evaluation metrics to `writer` if available.
+
+    Args:
+        model (nn.Module): PyTorch model to train.
+        train_dl (DataLoader): Training dataloader.
+        val_dl (DataLoader): Validation dataloader.
+        optimizer: Optimizer with `zero_grad`/`step` methods.
+        loss_fn: Loss function taking (outputs, targets) and returning scalar.
+        metric_fn: Metric function for monitoring (e.g., MAE).
+        num_epochs (int): Number of training epochs.
+        save_dir (str or Path, optional): Directory to write model summaries/checkpoints.
+        writer (SummaryWriter, optional): TensorBoard writer for logging.
+        cuda (bool): Whether to run batches on CUDA.
+    """
 
     best_val_loss = float('inf')
     best_epoch = None
@@ -70,6 +98,19 @@ def train_and_evaluate(model, train_dl, val_dl, optimizer, loss_fn, metric_fn, n
     logging.info(f"Training completed. Best Loss: {best_val_loss:.4f} at epoch: {best_epoch}")
 
 def train(model, optimizer, loss_fn, metric_fn, train_dl, cuda=False):
+    """Single epoch training loop.
+
+    Args:
+        model (nn.Module): Model to train.
+        optimizer: Optimizer instance.
+        loss_fn: Loss function.
+        metric_fn: Metric function to compute monitoring metric.
+        train_dl (DataLoader): Training dataloader.
+        cuda (bool): Whether to move batches to CUDA.
+
+    Returns:
+        tuple: `(avg_loss, avg_metric)` for the epoch.
+    """
     model.train()
 
     train_loss = RunningAverage()
@@ -89,6 +130,18 @@ def train(model, optimizer, loss_fn, metric_fn, train_dl, cuda=False):
     return train_loss(), train_metric()
 
 def evaluate(model, loss_fn, metric_fn, val_dl, cuda=False):
+    """Evaluate `model` on `val_dl` without gradient updates.
+
+    Args:
+        model (nn.Module): Model to evaluate.
+        loss_fn: Loss function.
+        metric_fn: Metric function.
+        val_dl (DataLoader): Validation dataloader.
+        cuda (bool): Whether to move batches to CUDA.
+
+    Returns:
+        tuple: `(avg_loss, avg_metric)` over the validation set.
+    """
     model.eval()
 
     val_loss = RunningAverage()

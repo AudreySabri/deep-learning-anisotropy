@@ -10,6 +10,7 @@ from data.csv_dataset import CSVDataset
 from data.dataloaders import create_dataloader
 
 class AnisotropyDataModule(pl.LightningDataModule):
+    """Data module for handling anisotropy dataset."""
     def __init__(
         self,
         root_path: str,
@@ -25,6 +26,21 @@ class AnisotropyDataModule(pl.LightningDataModule):
         cuda: bool = False,
         seed: int = 42
     ):
+        """
+        Args:
+            root_path: (str) path to the root directory containing the dataset
+            file_path: (str) path to the csv file containing the dataset
+            input_pattern: (str) regex pattern to match input column names
+            target_pattern: (str) regex pattern to match target column names
+            train_split: (float) fraction of dataset to use for training
+            val_split: (float) fraction of dataset to use for validation
+            test_split: (float) fraction of dataset to use for testing
+            transform: (Optional[str]) type of transformation to apply to the data
+            batch_size: (int) number of samples per batch
+            num_workers: (int) number of subprocesses to use for data loading
+            cuda: (bool) whether to use CUDA for data loading
+            seed: (int) random seed for reproducibility
+        """
         super().__init__()
         self.save_hyperparameters(logger=False)
 
@@ -45,7 +61,16 @@ class AnisotropyDataModule(pl.LightningDataModule):
         self.test_dataset = None
         
     def setup(self, stage: Optional[str] = None) -> None:
-         
+        """Prepare datasets and scalers for training/validation/testing.
+
+        Splits the CSV-backed `CSVDataset` into train/val/test subsets, fits
+        the requested input/target scalers on the training split, and stores
+        the resulting `Subset` objects on the instance.
+
+        Args:
+            stage (Optional[str]): Optional stage name (unused).
+        """
+        
         if self.train_dataset is not None:
             return
 
@@ -85,6 +110,11 @@ class AnisotropyDataModule(pl.LightningDataModule):
         self.test_dataset  = Subset(dataset, test_idx)
 
     def train_dataloader(self):
+        """Create a DataLoader for the training subset.
+
+        Returns a PyTorch `DataLoader` configured with the module's batch
+        size, number of workers and pin_memory settings.
+        """
         return create_dataloader(
             dataset=self.train_dataset,
             batch_size=self.hparams.batch_size,
@@ -93,6 +123,11 @@ class AnisotropyDataModule(pl.LightningDataModule):
             pin_memory=self.hparams.cuda
         )
     def val_dataloader(self):
+        """Create a DataLoader for the validation subset or return `None`.
+
+        Returns a `DataLoader` when the validation split is non-empty, else
+        returns `None`.
+        """
         if len(self.val_dataset) > 0:
             return create_dataloader(
                 dataset=self.val_dataset,
@@ -104,6 +139,11 @@ class AnisotropyDataModule(pl.LightningDataModule):
         else:
             return None
     def test_dataloader(self):
+        """Create a DataLoader for the test subset or return `None`.
+
+        Returns a `DataLoader` when the test split is non-empty, else returns
+        `None`.
+        """
         if len(self.test_dataset) > 0:
             return create_dataloader(
                 dataset=self.test_dataset,
@@ -117,14 +157,17 @@ class AnisotropyDataModule(pl.LightningDataModule):
         
     @property
     def train_size(self):
+        """Return the number of samples in the training subset."""
         return len(self.train_dataset)
     
     @property
     def return_input_scaler(self):
+        """Return the fitted input scaler (or `None`)."""
         return self.input_scaler
     
     @property
     def return_target_scaler(self):
+        """Return the fitted target scaler (or `None`)."""
         if self.target_scaler is None:
             return None
         else:
@@ -132,8 +175,10 @@ class AnisotropyDataModule(pl.LightningDataModule):
     
     @property 
     def return_feature_names(self):
+        """Return list of input feature names extracted from the CSV."""
         return self.feature_names
 
     @property
     def return_target_names(self):
+        """Return list of target feature names extracted from the CSV."""
         return self.target_names

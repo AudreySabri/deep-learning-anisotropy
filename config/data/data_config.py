@@ -13,11 +13,11 @@ class DataConfig:
     input_pattern: str = r'^c\d+_out$'
     target_pattern: str = r'^hill\d+_out$'
  #   target_pattern: str = r'^q\d+$'
-    train_split: float = 0.75
-    val_split: float = 0.20
-    test_split: float = 0.05
+    train_split: float = 0.8
+    val_split: float = 0.0
+    test_split: float = 0.2
     transform: Optional[str] = 'standard'
-    batch_size: int = 1024
+    batch_size: int = 512
     num_workers: int = 1
     cuda: bool = False
     seed: int = 42

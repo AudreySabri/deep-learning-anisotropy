@@ -1,4 +1,4 @@
-"""Config file for MKP grid hyperparameter searchers"""
+"""Config file for MLP grid hyperparameter searchers"""
 from dataclasses import dataclass, field
 from typing import List, Any, Dict, Union, Optional
 
@@ -69,6 +69,11 @@ class PipelineConfig:
     launcher: Any = field(default_factory=SlurmConfig)
 
 def register_mlp_configs():
+    """Register MLP-related dataclasses with Hydra `ConfigStore`.
+
+    Registers the dataclass nodes for datamodule, model, loss, metric,
+    optimizer, trainer, predictor and launcher so Hydra can instantiate them.
+    """
     cs = ConfigStore()
     cs.store(group="datamodule", name="anisotropy", node=DataConfig)
     cs.store(group="model", name="mlp", node=MLPConfig)

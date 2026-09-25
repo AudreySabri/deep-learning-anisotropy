@@ -4,12 +4,20 @@ import torch
 import pyro
 
 def SVITrainer(svi, dataloader, num_epochs, device, writer=None):
-    """
-    Train a Pyro model using Stochastic Variational Inference (SVI).
+    """Train a Pyro model using Stochastic Variational Inference (SVI).
+
+    Args:
+        svi: A configured Pyro SVI instance.
+        dataloader: Iterable of (input, target) batches used for training.
+        num_epochs (int): Number of training epochs.
+        device (str or torch.device): Device to run training on.
+        writer (optional): TensorBoard `SummaryWriter` for logging metrics.
 
     Returns:
-        List[float]: List of average losses per epoch.
-        List[float]: List of average MAE scores per epoch.
+        None
+
+    Side effects:
+        Logs per-epoch metrics and updates the Pyro parameter store.
     """
     pyro.clear_param_store()
     losses = []

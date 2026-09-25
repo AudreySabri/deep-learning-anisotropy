@@ -9,6 +9,7 @@ from utils import fullname
 
 @dataclass
 class MLPConfig:
+    """Configuration for MLP model."""
     _target_: str = fullname(MLP)
     input_dim: int = 21
     output_dim: int = 6
@@ -18,6 +19,7 @@ class MLPConfig:
 
 @dataclass
 class AdamOptimizerConfig:
+    """Configuration for Adam optimizer."""
     _target_: str = fullname(torch.optim.AdamW)
     params: Any = MISSING
     lr: float = 1e-4
@@ -26,10 +28,12 @@ class AdamOptimizerConfig:
 
 @dataclass
 class MSELossConfig:
+    """Configuration for loss function."""
     _target_: str = fullname(torch.nn.MSELoss)
 
 @dataclass
 class TrackingMetricConfig:
+    """Configuration for tracking metric."""
     _target_: str = fullname(torch.nn.L1Loss)
 
 
